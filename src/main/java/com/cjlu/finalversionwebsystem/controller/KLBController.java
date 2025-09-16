@@ -8,7 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.cjlu.finalversionwebsystem.utils.CookieService;
+import com.cjlu.finalversionwebsystem.utils.JWTUtils;
+import com.cjlu.finalversionwebsystem.utils.CookieService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
@@ -24,12 +28,12 @@ public class KLBController {
 
     //创建新知识库
     @PostMapping("/creatKLB")
-    public Result creatNewKLB(@RequestBody Map<String, Object> request) {
+    public Result creatNewKLB(@RequestBody Map<String, Object> request, HttpServletRequest httpServletRequest) {
         try {
             KLB klb = new KLB(); // 创建一个新的知识库对象
 
             klb.setKLBName((String) request.get("KLBName")); // 设置知识库名称
-            klb.setKLBCreator((String) request.get("KLBCreator")); // 设置创建者
+            klb.setKLBCreator(getUserName(httpServletRequest)); // 设置创建者
             klb.setDescription((String) request.get("KLBDescription")); // 设置描述
             klb.setKLBStatus((String) request.get("KLBStatus")); // 设置状态
             klb.setKLBSearchStrategy((String) request.get("KLBSearchStrategy")); // 设置搜索策略
@@ -40,7 +44,7 @@ public class KLBController {
             klb.setPrimaryClassification((String) request.get("primaryClassification")); // 设置一级分类
             klb.setSecondaryClassification((String) request.get("secondaryClassification")); // 设置二级分类
 
-            log.info("Creating new knowledge library: {}", klb); // 记录日志：正在创建新的知识库// 调用服务层方法创建新的知识库
+            log.info("Creating new knowledge library: {}", klb); // 记录日志：正在创建新的知识库
             log.info("Knowledge library created successfully: {}", klb); // 记录日志：知识库创建成功
             return klbService.creatNewKLB(klb); // 返回成功结果
         } catch (Exception e) {
@@ -48,6 +52,13 @@ public class KLBController {
             return Result.error("知识库创建失败: " + e.getMessage()); // 返回错误结果
         }
     }
+
+    private String getUserName(HttpServletRequest httpServletRequest) {
+        // 从请求中获取用户名，这里假设有一个方法可以从请求中提取用户名
+        // 请根据实际情况实现
+        return CookieService.getUsernameFromCookie(httpServletRequest);
+    }
+
 
     //删除知识库
     @PostMapping("/deleteKLB")

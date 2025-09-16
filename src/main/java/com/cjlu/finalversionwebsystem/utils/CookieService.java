@@ -27,8 +27,8 @@ public class CookieService {
         return null;
     }
 
-    public static String getUsernameFromCookie(HttpServletRequest httpServletRequest, String cookieName) {
-        cookieName = "TheLifeIsGone";
+    public static String getUsernameFromCookie(HttpServletRequest httpServletRequest) {
+        String cookieName = "TheLifeIsGone";
         String token = getCookieValue(httpServletRequest,cookieName);
         return JWTUtils.getUsernameFromToken(token);
     }
