@@ -53,6 +53,7 @@ public class KLBController {
         }
     }
 
+
     private String getUserName(HttpServletRequest httpServletRequest) {
         // 从请求中获取用户名，这里假设有一个方法可以从请求中提取用户名
         // 请根据实际情况实现
@@ -95,9 +96,9 @@ public class KLBController {
 
     //通过创建者查询知识库
     @PostMapping("/selectKLBByKLBCreator")
-    public Result selectKLBByKLBCreator(@RequestBody Map<String, Object> request) { // 通过创建者查询知识库
+    public Result selectKLBByKLBCreator(@RequestBody Map<String, Object> request, HttpServletRequest httpServletRequest) { // 通过创建者查询知识库
         KLB klb = new KLB(); // 创建一个新的知识库对象
-        klb.setKLBCreator((String) request.get("KLBCreator")); // 设置创建者
+        klb.setKLBCreator(getUserName(httpServletRequest)); // 设置创建者
         return klbService.selectKLBByKLBCreator(klb); // 调用服务层方法查询知识库
     }
 
