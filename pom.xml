@@ -111,12 +111,12 @@
         <!-- Spring Boot Web 依赖，包含Servlet API -->
         <!-- Servlet API 依赖 -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
-            <!-- 对于Servlet容器（如Tomcat）运行的项目，使用provided作用域 -->
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>5.0.0</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -183,8 +183,8 @@
                             <version>1.18.28</version>
                         </path>
                     </annotationProcessorPaths>
-                    <source>8</source>
-                    <target>8</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
 

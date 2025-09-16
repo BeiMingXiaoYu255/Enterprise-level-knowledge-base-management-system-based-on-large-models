@@ -14,11 +14,10 @@ server:
 
 spring:
   datasource:
-    # 使用H2内存数据库进行测试，避免MySQL连接问题
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:mysql://localhost:3306/klbwebsystem?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: 2550505
+    driver-class-name: com.mysql.cj.jdbc.Driver
   h2:
     console:
       enabled: true

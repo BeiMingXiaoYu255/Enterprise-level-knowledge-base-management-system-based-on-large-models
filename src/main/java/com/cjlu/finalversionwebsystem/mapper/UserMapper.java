@@ -18,7 +18,7 @@ public interface UserMapper {
             + "profilePicture VARCHAR(255)"
             + ")")
     void createUserTable();
-    
+
     //查寻用户的个人资料
     @Select("SELECT * FROM users WHERE userName = #{userName}")
     User findUserByUserName(@Param("userName") String userName);
