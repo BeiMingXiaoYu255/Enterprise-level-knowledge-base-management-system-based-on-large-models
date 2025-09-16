@@ -1,0 +1,49 @@
+# 测试环境配置
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: test
+  datasource:
+    # 使用内存数据库进行测试
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+# 简化的AI配置（用于测试）
+langchain4j:
+  open-ai:
+    chat-model:
+      base-url: https://api.openai.com/v1
+      api-key: test-key
+      model-name: gpt-3.5-turbo
+      log-requests: false
+      log-responses: false
+    streaming-chat-model:
+      base-url: https://api.openai.com/v1
+      api-key: test-key
+      model-name: gpt-3.5-turbo
+      log-requests: false
+      log-responses: false
+    embedding-model:
+      base-url: https://api.openai.com/v1
+      api-key: test-key
+      model-name: text-embedding-ada-002
+      log-requests: false
+      log-responses: false
+
+# 日志配置
+logging:
+  level:
+    com.cjlu.finalversionwebsystem: DEBUG
+    org.springframework: WARN
+    dev.langchain4j: WARN

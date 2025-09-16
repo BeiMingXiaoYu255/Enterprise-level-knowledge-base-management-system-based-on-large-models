@@ -1,0 +1,134 @@
+
+org.springframework.jdbc.BadSqlGrammarException:
+### Error querying database.  Cause: org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS" not found (this database is empty); SQL statement:
+SELECT * FROM users WHERE userName = ? [42104-214]
+### The error may exist in com/cjlu/finalversionwebsystem/mapper/UserMapper.java (best guess)
+### The error may involve com.cjlu.finalversionwebsystem.mapper.UserMapper.findUserByUserName
+### The error occurred while executing a query
+### SQL: SELECT * FROM users WHERE userName = ?
+### Cause: org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS" not found (this database is empty); SQL statement:
+SELECT * FROM users WHERE userName = ? [42104-214]
+; bad SQL grammar []; nested exception is org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS" not found (this database is empty); SQL statement:     
+SELECT * FROM users WHERE userName = ? [42104-214]
+        at org.springframework.jdbc.support.SQLExceptionSubclassTranslator.doTranslate(SQLExceptionSubclassTranslator.java:93) ~[spring-jdbc-5.3.31.jar!/:5.3.31]
+        at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:73) ~[spring-jdbc-5.3.31.jar!/:5.3.31]
+        at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:82) ~[spring-jdbc-5.3.31.jar!/:5.3.31]
+        at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:92) ~[mybatis-spring-2.1.2.jar!/:2.1.2]
+        at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:439) ~[mybatis-spring-2.1.2.jar!/:2.1.2]
+        at com.sun.proxy.$Proxy91.selectOne(Unknown Source) ~[na:na]
+        at org.mybatis.spring.SqlSessionTemplate.selectOne(SqlSessionTemplate.java:160) ~[mybatis-spring-2.1.2.jar!/:2.1.2]
+        at org.apache.ibatis.binding.MapperMethod.execute(MapperMethod.java:87) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at org.apache.ibatis.binding.MapperProxy$PlainMethodInvoker.invoke(MapperProxy.java:141) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at org.apache.ibatis.binding.MapperProxy.invoke(MapperProxy.java:86) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at com.sun.proxy.$Proxy102.findUserByUserName(Unknown Source) ~[na:na]
+        at com.cjlu.finalversionwebsystem.service.impl.UserServiceImpl.login(UserServiceImpl.java:39) ~[classes!/:0.0.1-SNAPSHOT]
+        at com.cjlu.finalversionwebsystem.controller.UserController.login(UserController.java:38) ~[classes!/:0.0.1-SNAPSHOT]
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+        at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+        at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredMethodElement.inject(AutowiredAnnotationBeanPostProcessor.java:782) ~[spring-beans-5.3.31.jar!/:5.3.31]
+        at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:119) ~[spring-beans-5.3.31.jar!/:5.3.31]        
+        at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:408) ~[spring-beans-5.3.31.jar!/:5.3.31]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1431) ~[spring-beans-5.3.31.jar!/:5.3.31]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:619) ~[spring-beans-5.3.31.jar!/:5.3.31]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.31.jar!/:5.3.31]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.31.jar!/:5.3.31]
+        at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.31.jar!/:5.3.31]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.31.jar!/:5.3.31]    
+        at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.31.jar!/:5.3.31]      
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955) ~[spring-beans-5.3.31.jar!/:5.3.31]
+        at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:929) ~[spring-context-5.3.31.jar!/:5.3.31]
+        at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:591) ~[spring-context-5.3.31.jar!/:5.3.31]
+        at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147) ~[spring-boot-2.7.18.jar!/:2.7.18]
+        at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732) ~[spring-boot-2.7.18.jar!/:2.7.18]
+        at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:409) ~[spring-boot-2.7.18.jar!/:2.7.18]
+        at org.springframework.boot.SpringApplication.run(SpringApplication.java:308) ~[spring-boot-2.7.18.jar!/:2.7.18]
+        at org.springframework.boot.SpringApplication.run(SpringApplication.java:1300) ~[spring-boot-2.7.18.jar!/:2.7.18]
+        at org.springframework.boot.SpringApplication.run(SpringApplication.java:1289) ~[spring-boot-2.7.18.jar!/:2.7.18]
+        at com.cjlu.finalversionwebsystem.FinalVersionWebSystemApplication.main(FinalVersionWebSystemApplication.java:10) ~[classes!/:0.0.1-SNAPSHOT]   
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+        at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+        at org.springframework.boot.loader.MainMethodRunner.run(MainMethodRunner.java:49) ~[demo-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+        at org.springframework.boot.loader.Launcher.launch(Launcher.java:108) ~[demo-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+        at org.springframework.boot.loader.Launcher.launch(Launcher.java:58) ~[demo-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+        at org.springframework.boot.loader.JarLauncher.main(JarLauncher.java:65) ~[demo-0.0.1-SNAPSHOT.jar:0.0.1-SNAPSHOT]
+Caused by: org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS" not found (this database is empty); SQL statement:
+SELECT * FROM users WHERE userName = ? [42104-214]
+        at org.h2.message.DbException.getJdbcSQLException(DbException.java:502) ~[h2-2.1.214.jar!/:na]
+        at org.h2.message.DbException.getJdbcSQLException(DbException.java:477) ~[h2-2.1.214.jar!/:na]
+        at org.h2.message.DbException.get(DbException.java:223) ~[h2-2.1.214.jar!/:na]
+        at org.h2.message.DbException.get(DbException.java:199) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.getTableOrViewNotFoundDbException(Parser.java:8385) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.getTableOrViewNotFoundDbException(Parser.java:8369) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.readTableOrView(Parser.java:8358) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.readTablePrimary(Parser.java:1863) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.readTableReference(Parser.java:2334) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.parseSelectFromPart(Parser.java:2772) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.parseSelect(Parser.java:2878) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.parseQueryPrimary(Parser.java:2762) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.parseQueryTerm(Parser.java:2633) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.parseQueryExpressionBody(Parser.java:2612) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.parseQueryExpressionBodyAndEndOfQuery(Parser.java:2605) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.parseQueryExpression(Parser.java:2598) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.parseQuery(Parser.java:2567) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.parsePrepared(Parser.java:724) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.parse(Parser.java:689) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.parse(Parser.java:661) ~[h2-2.1.214.jar!/:na]
+        at org.h2.command.Parser.prepareCommand(Parser.java:569) ~[h2-2.1.214.jar!/:na]
+        at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:631) ~[h2-2.1.214.jar!/:na]
+        at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:554) ~[h2-2.1.214.jar!/:na]
+        at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1116) ~[h2-2.1.214.jar!/:na]
+        at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:92) ~[h2-2.1.214.jar!/:na]
+        at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:288) ~[h2-2.1.214.jar!/:na]
+        at com.zaxxer.hikari.pool.ProxyConnection.prepareStatement(ProxyConnection.java:337) ~[HikariCP-4.0.3.jar!/:na]
+        at com.zaxxer.hikari.pool.HikariProxyConnection.prepareStatement(HikariProxyConnection.java) ~[HikariCP-4.0.3.jar!/:na]
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+        at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+        at org.apache.ibatis.logging.jdbc.ConnectionLogger.invoke(ConnectionLogger.java:53) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at com.sun.proxy.$Proxy70.prepareStatement(Unknown Source) ~[na:na]
+        at org.apache.ibatis.executor.statement.PreparedStatementHandler.instantiateStatement(PreparedStatementHandler.java:88) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at org.apache.ibatis.executor.statement.BaseStatementHandler.prepare(BaseStatementHandler.java:90) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at org.apache.ibatis.executor.statement.RoutingStatementHandler.prepare(RoutingStatementHandler.java:60) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at org.apache.ibatis.executor.SimpleExecutor.prepareStatement(SimpleExecutor.java:90) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at org.apache.ibatis.executor.SimpleExecutor.doQuery(SimpleExecutor.java:64) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at org.apache.ibatis.executor.BaseExecutor.queryFromDatabase(BaseExecutor.java:336) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at org.apache.ibatis.executor.BaseExecutor.query(BaseExecutor.java:158) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at org.apache.ibatis.executor.CachingExecutor.query(CachingExecutor.java:110) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at org.apache.ibatis.executor.CachingExecutor.query(CachingExecutor.java:90) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:154) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:147) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:142) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at org.apache.ibatis.session.defaults.DefaultSqlSession.selectOne(DefaultSqlSession.java:75) ~[mybatis-3.5.14.jar!/:3.5.14]
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+        at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+        at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:425) ~[mybatis-spring-2.1.2.jar!/:2.1.2]
+        ... 40 common frames omitted
+
+2025-09-09 22:10:56.527  INFO 27976 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2025-09-09 22:10:56.530  INFO 27976 --- [           main] u.j.c.RefreshScopeRefreshedEventListener : Refreshing cached encryptable property sources on ServletWebServerInitializedEvent
+2025-09-09 22:10:56.531  INFO 27976 --- [           main] CachingDelegateEncryptablePropertySource : Property Source systemProperties refreshed
+2025-09-09 22:10:56.531  INFO 27976 --- [           main] CachingDelegateEncryptablePropertySource : Property Source random refreshed 
+2025-09-09 22:10:56.531  INFO 27976 --- [           main] CachingDelegateEncryptablePropertySource : Property Source Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' refreshed
+2025-09-09 22:10:56.532  INFO 27976 --- [           main] c.u.j.EncryptablePropertySourceConverter : Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
+2025-09-09 22:10:56.532  INFO 27976 --- [           main] c.u.j.EncryptablePropertySourceConverter : Skipping PropertySource servletConfigInitParams [class org.springframework.core.env.PropertySource$StubPropertySource
+2025-09-09 22:10:56.532  INFO 27976 --- [           main] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource servletContextInitParams [org.springframework.web.context.support.ServletContextPropertySource] to EncryptableEnumerablePropertySourceWrapper
+
+2025-09-09 22:10:56.555  INFO 27976 --- [           main] c.c.f.FinalVersionWebSystemApplication   : Started FinalVersionWebSystemApplication in 13.5 seconds (JVM running for 14.316)
+2025-09-09 22:11:30.999  INFO 27976 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherSer2025-09-09 22:10:56.555  INFO 27976 --- [           main] c.c.f.FinalVersionWebSystemApplication   : Started FinalVersionWebSystemApplication in 13.5 seconds (JVM running for 14.316)
+2025-09-09 22:11:30.999  INFO 27976 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+ervlet'
+2025-09-09 22:11:31.001  INFO 27976 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-09-09 22:11:31.123  INFO 27976 --- [nio-8080-exec-1] c.c.f.controller.ChatController          : 文件检索请求 - 关键字: Spring
+2025-09-09 22:11:31.124  WARN 27976 --- [nio-8080-exec-1] c.c.f.service.impl.FileServiceImpl       : 文件根目录不存在: D:\桌面\trueweb1\files
+2025-09-09 22:11:31.124  INFO 27976 --- [nio-8080-exec-1] c.c.f.controller.ChatController          : 文件检索完成 - 关键字: Spring, 找到 0 个匹配文件   
+2025-09-09 22:11:45.719  INFO 27976 --- [nio-8080-exec-3] c.c.f.controller.ChatController          : 文件检索请求 - 关键字: Java
+2025-09-09 22:11:45.719  WARN 27976 --- [nio-8080-exec-3] c.c.f.service.impl.FileServiceImpl       : 文件根目录不存在: D:\桌面\trueweb1\files
+2025-09-09 22:11:45.719  INFO 27976 --- [nio-8080-exec-3] c.c.f.controller.ChatController          : 文件检索完成 - 关键字: Java, 找到 0 个匹配文件     
+

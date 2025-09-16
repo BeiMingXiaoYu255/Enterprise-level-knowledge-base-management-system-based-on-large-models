@@ -1,0 +1,78 @@
+java: -Dhttp.proxyHost=proxy.example.com -Dhttp.proxyPort=8080 \
+  -Dhttps.proxyHost=proxy.example.com -Dhttps.proxyPort=8080 \
+  -jar your-application.jar
+
+logging:
+  level:
+    root: INFO
+    com.example.demo.mapper: DEBUG
+    org.springframework.mail: DEBUG
+    dev.langchain4j: DEBUG
+
+server:
+  port: 8080
+
+spring:
+  datasource:
+    # 使用H2内存数据库进行测试，避免MySQL连接问题
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: q15068673111@sina.cn
+    password: ad43435afec91223
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            port: 465
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+klb:
+  storage:
+    path: D:\KLB\
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+langchain4j:
+  open-ai:
+    chat-model:
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api-key: ${API-KEY:sk-948f9c0c86cc44438afc6c0bfb2f19ab}
+      model-name: qwen-plus
+      log-requests: true
+      log-responses: true
+    streaming-chat-model: #流式回答方法
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api-key: ${API-KEY:sk-948f9c0c86cc44438afc6c0bfb2f19ab}
+      model-name: qwen-plus
+      log-requests: true
+      log-responses: true
+    embedding-model:
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api-key: ${API-KEY:sk-948f9c0c86cc44438afc6c0bfb2f19ab}
+      model-name: text-embedding-v3
+      log-requests: true
+      log-responses: true
