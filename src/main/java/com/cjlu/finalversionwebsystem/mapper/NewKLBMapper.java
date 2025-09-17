@@ -10,8 +10,8 @@ import java.util.Map;
 public interface NewKLBMapper {
 
     @Insert("INSERT INTO klb (KLBName, KLBCreator, primaryClassification, secondaryClassification, KLBReviseTime, supportedDataFormats, KLBSearchStrategy, description, creatTime, KLBStatus, location, accessCount) " +
-            "VALUES (#{KLBName}, #{KLBCreator}, #{primaryClassification}, #{secondaryClassification}, #{KLBReviseTime}, #{supportedDataFormats}, #{KLBSearchStrategy}, #{description}, #{creatTime}, #{KLBStatus}, #{location}, #{accessCount})")
-    void insertKLB(@Param("KLBName") String KLBName, @Param("KLBCreator") String KLBCreator, @Param("primaryClassification") String primaryClassification, @Param("secondaryClassification") String secondaryClassification, @Param("KLBReviseTime") String KLBReviseTime, @Param("supportedDataFormats") String supportedDataFormats, @Param("KLBSearchStrategy") String KLBSearchStrategy, @Param("description") String description, @Param("creatTime") String creatTime, @Param("KLBStatus") String KLBStatus, @Param("location") String location, @Param("accessCount") int accessCount);
+            "VALUES (#{KLBName}, #{KLBCreator}, #{primaryClassification}, #{secondaryClassification}, #{KLBReviseTime}, #{supportedDataFormats}, #{KLBSearchStrategy}, #{description}, #{creatTime}, #{KLBStatus}, #{location}, 0)")
+    void insertKLB(@Param("KLBName") String KLBName, @Param("KLBCreator") String KLBCreator, @Param("primaryClassification") String primaryClassification, @Param("secondaryClassification") String secondaryClassification, @Param("KLBReviseTime") String KLBReviseTime, @Param("supportedDataFormats") String supportedDataFormats, @Param("KLBSearchStrategy") String KLBSearchStrategy, @Param("description") String description, @Param("creatTime") String creatTime, @Param("KLBStatus") String KLBStatus, @Param("location") String location);
 
     @Delete("DELETE FROM klb WHERE id = #{id}")
     void deleteKLBById(@Param("id") int id);
