@@ -40,5 +40,7 @@ public interface NewKLBMapper {
 
     @Select("SELECT * FROM klb")
     List<Map<String, Object>> selectAllKLBs();
-
+    
+    @Select("SELECT COUNT(*) FROM klb WHERE KLBName = #{KLBName}")
+    int existsByKLBName(@Param("KLBName") String KLBName);
 }

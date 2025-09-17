@@ -15,10 +15,14 @@ public class NewKLBServiceImpl implements NewKLBInterface {
     
     @Autowired
     private NewKLBMapper klbMapper;
-    
+
 
     @Override
     public void insertKLB(String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus, String location) {
+        int count = klbMapper.existsByKLBName(KLBName);
+        if (count > 0) {
+            throw new RuntimeException("KLB with name " + KLBName + " already exists");
+        }
         klbMapper.insertKLB(KLBName, KLBCreator, primaryClassification, secondaryClassification, KLBReviseTime, supportedDataFormats, KLBSearchStrategy, description, creatTime, KLBStatus, location);
     }
 
