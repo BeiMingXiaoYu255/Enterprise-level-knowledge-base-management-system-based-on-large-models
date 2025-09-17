@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>知识库管理系统首页</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="index.css">
+  <script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          microsoftGreen: '#0078d4',
+          microsoftDark: '#101820',
+          microsoftLight: '#f3f2f1',
+          darkBlue: '#0a2463',
+          navyBlue: '#23395b',
+          customDark: '#083a6d',  // 新增的颜色类
+        },
+        fontFamily: {
+          segoe: ['Segoe UI', 'system-ui', 'sans-serif'],
+        },
+      },
+    }
+  }
+</script>
+</head>
+
+<body class="font-segoe bg-gray-50 text-customDark">
+  <!-- 顶部通知栏 -->
+  <div class="bg-customDark text-white py-2 px-4">
+    <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+      <p class="text-center md:text-left">知识库管理系统V不知道第几版本正式发布！全新功能体验</p>
+      <a href="#" class="text-white hover:underline mt-1 md:mt-0">查看更新日志 <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <nav class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300" id="mainNav">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <!-- 主导航-桌面端 -->
+        <div class="hidden md:flex space-x-8">
+          <div class="group relative">
+            <a href="#" class="nav-link-hover text-microsoftDark font-medium inline-block py-5">喵喵喵喵</a>
+            <div class="nav-dropdown py-4">
+              <div class="container mx-auto px-4">
+                <h3 class="text-lg font-semibold mb-3">喵喵喵喵</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <a href="#" class="block hover:text-microsoftGreen">
+                    <i class="fas fa-laptop text-2xl mb-2"></i>
+                    <p>喵喵喵喵</p>
+                  </a>
+                  <a href="#" class="block hover:text-microsoftGreen">
+                    <i class="fas fa-cloud text-2xl mb-2"></i>
+                    <p>喵喵喵喵</p>
+                  </a>
+                  <a href="#" class="block hover:text-microsoftGreen">
+                    <i class="fas fa-video text-2xl mb-2"></i>
+                    <p>喵喵喵喵</p>
+                  </a>
+                  <a href="#" class="block hover:text-microsoftGreen">
+                    <p>喵喵喵喵</p>
+                    <i class="fas fa-file-alt text-2xl mb-2"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="group relative">
+            <a href="#" class="nav-link-hover text-microsoftDark font-medium inline-block py-5">喵喵喵喵</a>
+            <div class="nav-dropdown py-4">
+              <div class="container mx-auto px-4">
+                <h3 class="text-lg font-semibold mb-3">喵喵喵喵</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <a href="#" class="block hover:text-microsoftGreen">
+                    <i class="fas fa-laptop text-2xl mb-2"></i>
+                    <p>企业知识库</p>
+                  </a>
+                  <a href="#" class="block hover:text-microsoftGreen">
+                    <i class="fas fa-video text-2xl mb-2"></i>
+                    <p>研发文档库</p>
+                  </a>
+                  <a href="#" class="block hover:text-microsoftGreen">
+                    <i class="fas fa-file-alt text-2xl mb-2"></i>
+                    <p>客户支持库</p>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a href="#" class="nav-link-hover text-microsoftDark font-medium inline-block py-5">喵喵喵喵</a>
+          <a href="#" class="nav-link-hover text-microsoftDark font-medium inline-block py-5">喵喵喵喵</a>
+          <a href="#" class="nav-link-hover text-microsoftDark font-medium inline-block py-5">喵喵喵喵</a>
+          <div class="group relative">
+            <a href="#" class="nav-link-hover text-microsoftDark font-medium inline-block py-5">喵喵喵喵</a>
+            <div class="nav-dropdown py-4">
+              <div class="container mx-auto px-4">
+                <h3 class="text-lg font-semibold mb-3">喵喵喵喵</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <a href="#" class="block hover:text-microsoftGreen">
+                    <i class="fas fa-laptop text-2xl mb-2"></i>
+                    <p>喵喵喵喵</p>
+                  </a>
+                  <a href="#" class="block hover:text-microsoftGreen">
+                    <i class="fas fa-cloud text-2xl mb-2"></i>
+                    <p>喵喵喵喵</p>
+                  </a>
+                  <a href="#" class="block hover:text-microsoftGreen">
+                    <i class="fas fa-video text-2xl mb-2"></i>
+                    <p>喵喵喵喵</p>
+                  </a>
+                  <a href="#" class="block hover:text-microsoftGreen">
+                    <p>喵喵喵喵</p>
+                    <i class="fas fa-file-alt text-2xl mb-2"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a href="#" class="nav-link-hover text-microsoftDark font-medium inline-block py-5">喵喵喵喵</a>
+          <a href="#" class="nav-link-hover text-microsoftDark font-medium inline-block py-5">喵喵喵喵</a>
+        </div>
+
+        <!-- 右侧操作栏 -->
+        <div class="flex items-center space-x-4 md:space-x-6">
+          <div class="relative hidden sm:block">
+            <input type="text" placeholder="搜索知识库功能..." class="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-microsoftGreen focus:border-transparent w-36 lg:w-48 transition-all duration-300">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          </div>
+          <a href="#" class="text-microsoftDark hover:text-microsoftGreen transition-colors hidden sm:block">
+            <i class="fas fa-user text-lg"></i>
+          </a>
+          <!-- 移动端菜单按钮 -->
+          <button id="mobileMenuBtn" class="md:hidden text-microsoftDark focus:outline-none">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 移动端导航菜单 -->
+    <div id="mobileMenu" class="md:hidden hidden bg-white border-t border-gray-200">
+      <div class="container mx-auto px-4 py-4 space-y-4">
+        <div class="relative mb-4">
+          <input type="text" placeholder="搜索知识库功能..." class="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-microsoftGreen focus:border-transparent w-full">
+          <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        </div>
+        <a href="#" class="block py-2 hover:text-microsoftGreen">产品功能</a>
+        <a href="#" class="block py-2 hover:text-microsoftGreen">解决方案</a>
+        <a href="#" class="block py-2 hover:text-microsoftGreen">定价方案</a>
+        <a href="#" class="block py-2 hover:text-microsoftGreen">客户案例</a>
+        <a href="#" class="block py-2 hover:text-microsoftGreen">帮助中心</a>
+        <a href="#" class="block py-2 hover:text-microsoftGreen">资源中心</a>
+        <a href="#" class="block py-2 hover:text-microsoftGreen">关于我们</a>
+        <a href="#" class="block py-2 hover:text-microsoftGreen">联系销售</a>
+        <div class="pt-4 border-t border-gray-200">
+          <a href="#" class="block py-2 hover:text-microsoftGreen">登录</a>
+          <a href="#" class="block py-2 hover:text-microsoftGreen">免费试用</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主横幅 -->
+  <section class="bg-gradient-to-br from-blue-50 to-gray-100 py-12 md:py-20 overflow-hidden">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col lg:flex-row items-center">
+        <div class="lg:w-1/2 mb-10 lg:mb-0 lg:pr-10 slide-up">
+          <span class="inline-block bg-yellow-500 text-white text-sm font-bold px-3 py-1 rounded mb-4">智能知识管理平台</span>
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">集中管理企业知识资产，提升团队协作效率</h1>
+          <p class="text-lg text-gray-700 mb-8 max-w-lg">一站式知识库解决方案，帮助企业构建结构化知识体系，实现知识的创建、存储、共享与协作，让每个员工都能快速获取所需信息。</p>
+          <div class="flex flex-wrap gap-4">
+            <a href="#" class="bg-microsoftGreen text-white px-6 py-3 rounded-md font-medium banner-btn-hover inline-block">
+              免费试用 14 天 <i class="fas fa-chevron-right ml-1"></i>
+            </a>
+            <a href="#" class="bg-white text-microsoftGreen border border-microsoftGreen px-6 py-3 rounded-md font-medium hover:bg-blue-50 transition-colors">
+              观看演示视频 <i class="fas fa-chevron-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+        <div class="lg:w-1/2 flex justify-center scale-in relative" style="background: transparent">
+          <canvas id="techLinesCanvas"></canvas>
+          <!-- Three.js CDN -->
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 轮播促销区（已修改为深蓝色和黑色主题） -->
+  <section class="py-16 bg-white overflow-hidden">
+    <div class="container mx-auto px-4">
+      <div class="relative">
+        <h2 class="text-3xl font-bold mb-10 text-navyBlue">知识库核心功能</h2>
+        
+        <div class="carousel overflow-x-hidden" id="promoCarousel">
+          <div class="flex transition-transform duration-500 ease-out" id="carouselTrack">
+            <!-- 促销卡片 1 -->
+            <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] p-4">
+              <div class="bg-gradient-to-br from-navyBlue/10 to-darkBlue/20 rounded-xl overflow-hidden product-card-hover h-full">
+                <div class="p-6 md:p-8">
+                  <span class="inline-block bg-darkBlue text-white text-xs font-bold px-2 py-1 rounded mb-4">智能管理</span>
+                  <h3 class="text-2xl font-bold mb-3 text-darkBlue">文档集中管理</h3>
+                  <p class="text-gray-700 mb-6">支持多种格式文档上传与管理，自动分类与版本控制，让企业知识资产井井有条。</p>
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <span class="text-2xl font-bold text-darkBlue">高效</span>
+                      <span class="text-gray-500 line-through ml-2">繁琐</span>
+                    </div>
+                    <a href="#" class="text-darkBlue font-medium hover:underline">了解更多</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 促销卡片 2 -->
+            <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] p-4">
+              <div class="bg-gradient-to-br from-darkBlue/10 to-black/10 rounded-xl overflow-hidden product-card-hover h-full">
+                <div class="p-6 md:p-8">
+                  <span class="inline-block bg-black text-white text-xs font-bold px-2 py-1 rounded mb-4">智能检索</span>
+                  <h3 class="text-2xl font-bold mb-3 text-darkBlue">全文搜索功能</h3>
+                  <p class="text-gray-700 mb-6">基于AI的智能搜索引擎，支持关键词、语义和模糊搜索，快速定位所需知识内容。</p>
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <span class="text-2xl font-bold text-darkBlue">精准</span>
+                      <span class="text-gray-500 line-through ml-2">低效</span>
+                    </div>
+                    <a href="#" class="text-darkBlue font-medium hover:underline">了解更多</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 促销卡片 3 -->
+            <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] p-4">
+              <div class="bg-gradient-to-br from-navyBlue/20 to-black/20 rounded-xl overflow-hidden product-card-hover h-full">
+                <div class="p-6 md:p-8">
+                  <span class="inline-block bg-navyBlue text-white text-xs font-bold px-2 py-1 rounded mb-4">协作共享</span>
+                  <h3 class="text-2xl font-bold mb-3 text-darkBlue">团队协作平台</h3>
+                  <p class="text-gray-700 mb-6">多人实时协作编辑，评论与反馈功能，权限精细控制，促进知识高效流转。</p>
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <span class="text-2xl font-bold text-darkBlue">协同</span>
+                      <span class="text-gray-500 line-through ml-2">孤立</span>
+                    </div>
+                    <a href="#" class="text-darkBlue font-medium hover:underline">了解更多</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 轮播控制按钮 -->
+        <button id="prevBtn" class="absolute top-1/2 left-0 -translate-y-1/2 bg-white/80 hover:bg-white text-darkBlue w-10 h-10 rounded-full flex items-center justify-center shadow-md z-10 focus:outline-none">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button id="nextBtn" class="absolute top-1/2 right-0 -translate-y-1/2 bg-white/80 hover:bg-white text-darkBlue w-10 h-10 rounded-full flex items-center justify-center shadow-md z-10 focus:outline-none">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <!-- 轮播指示器 -->
+        <div class="flex justify-center mt-8 space-x-2" id="carouselIndicators">
+          <button class="w-3 h-3 rounded-full bg-darkBlue" data-index="0"></button>
+          <button class="w-3 h-3 rounded-full bg-gray-300" data-index="1"></button>
+          <button class="w-3 h-3 rounded-full bg-gray-300" data-index="2"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="bg-microsoftDark text-gray-300 pt-16 pb-8">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
+        <div>
+          <h4 class="text-white text-lg font-semibold mb-4">产品</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition-colors">功能特性</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">版本对比</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">更新日志</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-white text-lg font-semibold mb-4">解决方案</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition-colors">企业知识库</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">研发文档管理</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">客户服务知识库</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-white text-lg font-semibold mb-4">资源</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition-colors">帮助中心</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">使用教程</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">API文档</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-white text-lg font-semibold mb-4">公司</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition-colors">关于我们</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">客户案例</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">项目成果</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-white text-lg font-semibold mb-4">法律</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition-colors">服务条款</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">隐私政策</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">数据安全</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-white text-lg font-semibold mb-4">联系我们</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition-colors">销售咨询</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">技术支持</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">反馈建议</a></li>
+          </ul>
+          
+          <h4 class="text-white text-lg font-semibold mb-4 mt-6">语言</h4>
+          <div class="flex items-center">
+            <img src="https://flagcdn.com/w20/cn.png" alt="中国国旗" class="w-5 h-4 mr-2">
+            <span>简体中文 (中国)</span>
+            <i class="fas fa-chevron-down ml-2 text-xs"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-sm mb-4 md:mb-0">© 2023 知识库管理系统 版权所有</p>
+        <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
+          <a href="#" class="hover:text-white transition-colors">服务条款</a>
+          <a href="#" class="hover:text-white transition-colors">隐私政策</a>
+          <a href="#" class="hover:text-white transition-colors">Cookie 政策</a>
+          <a href="#" class="hover:text-white transition-colors">安全声明</a>
+          <a href="#" class="hover:text-white transition-colors">网站地图</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 返回顶部按钮 -->
+  <button id="backToTop" class="fixed bottom-8 right-8 bg-microsoftGreen text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300 z-50">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <!-- JavaScript -->
+  <script src="index.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./black.ico" type="image/x-icon">
+    <title>恒生电子-知识库管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <link rel="stylesheet" href="./main.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- 引入marked库用于解析Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        // 配置axios默认携带Cookie
+        axios.defaults.withCredentials = true;
+    </script>
+
+</head>
+
+<body>
+    <div id="app">
+        <section>
+            <!--左边导航栏部分-->
+            <div class="left-main" :class="{ 'collapsed': sidebarCollapsed }">
+                <h1>知识库管理系统</h1>
+                <div class="collapse-btn">
+                    <button title="收缩边栏" @click="toggleSidebar">
+                        <i :class="sidebarCollapsed ? 'fas fa-angle-double-right' : 'fas fa-angle-double-left'"></i>
+                    </button>
+                </div>
+                <div class="menu-section-title">menu</div>
+
+                <!-- 智能问答部分 -->
+                <div class="intelligent-answer" :class="{active: currentModule === 'chat'}"
+                    @click="switchModule('chat')">
+                    <div>
+                        <i class="fas fa-robot"></i> 智能问答
+                    </div>
+                    <button class="refresh-button" @click="refreshPage" title="新对话">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+
+                </div>
+
+                <!-- 知识库管理部分 -->
+                <!-- 管理我的知识库父栏目 -->
+                <div class="base-control" :class="{active: currentModule === 'knowledge-mine'}">
+                    <div @click="switchModule('knowledge-mine')">
+                        <i class="fas fa-pen-to-square"></i> 管理我的知识库
+                    </div>
+                </div>
+
+                <!-- 知识库内容概览父栏目 -->
+                <div class="base-control" :class="{active: currentModule === 'knowledge-information'}">
+                    <div @click="switchModule('knowledge-information')">
+                        <i class="fa-solid fa-bars"></i> 知识库内容概览
+                    </div>
+                </div>
+
+                <!-- 直接访问知识库部分 -->
+                <div class="base-control" :class="{active: currentModule === 'visit-select'}">
+                    <div @click="switchModule('visit-select')">
+                        <i class="fa-solid fa-magnifying-glass"></i> 查找知识库
+                    </div>
+                </div>
+                <div class="menu-section-title">tools</div>
+                <!-- 我的收藏 -->
+                <div class="base-control" :class="{active: currentModule === 'my-collection'}">
+                    <a href="collect.html" target="_blank" class="base-control-link">
+                        <i class="fas fa-star"></i>
+                        <span class="menu-text">我的收藏</span>
+                    </a>
+                </div>
+
+                <!-- 我的消息 -->
+                <div class="base-control" :class="{active: currentModule === 'my-messages'}">
+                    <div @click="handleAction('email-message'); openMailModule()" title="我的邮箱">
+                        <i class="fas fa-bell"></i> 我的消息
+                    </div>
+                </div>
+
+
+                <!-- 历史记录 -->
+                <div class="base-control" :class="{active: currentModule === 'history-records'}">
+                    <div @click="openHistoryModule()" title="历史记录">
+                        <i class="fas fa-history"></i> 历史记录
+                    </div>
+                </div>
+                <!-- 页面设置 -->
+                <div class="base-control" :class="{active: currentModule === 'page-settings'}">
+                    <div @click="">
+                        <i class="fas fa-cog"></i> 页面设置
+                    </div>
+                </div>
+
+                <!-- 新增用户信息区域 -->
+                <div class="user-info-section">
+                    <a href="https://www.doubao.com/chat/" target="_blank">
+                        <img src="user.jpg" alt="用户头像" class="user-avatar" @click="goToProfile">
+                    </a>
+                    <div class="user-greeting">
+                        <div class="greeting-text">Good day</div>
+                        <div class="user-name">{{ user.nickName || user.userName }}</div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <!--右边具体功能部分-->
+            <div class="right-main">
+                <!-- 智能问答界面 -->
+                <div v-if="currentModule === 'chat'">
+                    <div class="chat-header">
+                        <h2>智能问答</h2>
+
+                    </div>
+                    <div :class="['chat-container', isInConversation ? 'conversation' : 'initial']">
+                        <div class="chat-welcome" v-if="!isInConversation">
+                            <div class="welcome-title">
+                                <h2>果粒橙，很高兴见到你！</h2>
+                                <p>我可以帮您在知识库中检索出您所需要的知识</p>
+                            </div>
+                        </div>
+                        <div :class="['chat-messages', isInConversation ? 'conversation' : 'initial']">
+                            <div class="conversation-date" v-if="isInConversation">
+                                {{ currentDate }}
+                            </div>
+
+
+                            <!-- 对话消息列表 -->
+                            <div v-for="(message, index) in messages" :key="index" :class="['message', message.sender]">
+                                <div class="avatar" v-if="message.sender === 'ai'">AI</div>
+                                <div class="message-content-container">
+                                    <div class="message-content" v-if="message.sender==='ai'">
+                                        <div v-html="message.content"></div>
+                                        <!-- 添加语音播报按钮 -->
+                                        <button class="voice-play-button" @click="speakMessage(message.content)"
+                                            title="语音播报">
+                                            <i class="fas fa-volume-up"></i>
+                                        </button>
+                                    </div>
+                                    <div class="message-content" v-if="message.sender==='user'">{{ message.content }}
+                                    </div>
+
+                                    <div class="source-reference" v-if="message.sender==='ai' && message.source">
+                                        <div class="title"><i class="fas fa-link"></i> 知识库来源</div>
+                                        <div class="content">{{ message.source.content }}</div>
+                                        <a :href="message.source.link" class="link">查看完整文档 <i
+                                                class="fas fa-arrow-right"></i></a>
+                                    </div>
+
+                                    <div class="message-meta">
+                                        <span>{{ message.time }}</span>
+                                        <div class="message-actions">
+                                            <button title="复制" @click="copyMessage(message.content)"><i
+                                                    class="fas fa-copy" title="用户信息文本复制"></i></button>
+                                            <button title="分享"><i class="fas fa-share-alt"></i></button>
+                                            <button title="收藏"><i class="fas fa-star"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="message-feedback" v-if="message.sender==='ai'">
+                                    <button title="有帮助"><i class="fas fa-thumbs-up"></i></button>
+                                    <button title="无帮助"><i class="fas fa-thumbs-down"></i></button>
+                                </div>
+                            </div>
+
+                            <!-- 打字指示器 -->
+                            <div class="message ai typing" v-if="isTyping">
+                                <div class="avatar">AI</div>
+                                <div class="message-content">
+                                    <div class="typing-indicator">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span> 正在思考中...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-area">
+                            <div class="input-container">
+                                <textarea class="chat-input" placeholder="请输入您的问题..." rows="1" v-model="userInput"
+                                    @input="adjustTextareaHeight" @keydown.enter.exact.prevent="sendMessage"
+                                    @keydown.enter.shift.expect="addNewline"></textarea>
+                                <!-- 修改事件绑定为 @click -->
+                                <button class="voice-input-button" @click="toggleRecording" title="语音输入">
+                                    <i class="fas fa-microphone"></i>
+                                </button>
+                                <button class="send-button" @click="sendMessage" :disabled="!userInput.trim()"
+                                    title="信息发送">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 管理我的知识库界面 -->
+                <div v-else-if="currentModule === 'knowledge-mine'" class="knowledge-mine-page">
+                    <div class="knowledge-header">
+                        <h2>管理我的知识库</h2>
+                        <div class="knowledge-controls">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" v-model="searchKeyword" placeholder="搜索我的知识库..."
+                                    @keydown.enter="searchKnowledge">
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="knowledge-filters">
+                        <div class="filter-group">
+                            <span class="filter-label">状态:</span>
+                            <div class="filter-options">
+                                <button class="filter-btn active" title="分类">分类</button>
+                                <button class="filter-btn" title="我创建的">我创建的</button>
+                                <button class="filter-btn" title="我所有的">我所有的</button>
+                                <button class="filter-btn" title="我管理的">我管理的</button>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <span class="filter-label">排序:</span>
+                            <div class="filter-options">
+                                <button class="filter-btn active" title="最近更新">最近更新</button>
+                                <button class="filter-btn" title="创建时间">创建时间</button>
+                                <button class="filter-btn" title="名称">名称</button>
+                                <button class="filter-btn" title="使用频率">使用频率</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="knowledge-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon purple">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">我的知识库</div>
+                            </div>
+                            <div class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i> 0个新增
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon blue">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">文档总数</div>
+                            </div>
+                            <div class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i> 0 篇新增
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">本月访问</div>
+                            </div>
+                            <div class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i> 0
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange">
+                                <i class="fas fa-share-alt"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">被引用数</div>
+                            </div>
+                            <div class="stat-trend down">
+                                <i class="fas fa-arrow-down"></i> 0
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 知识库卡片网格 -->
+                    <div class="knowledge-grid">
+                        <!-- 创建新知识库模块 - 保持原有样式 -->
+                        <div class="knowledge-card create-new">
+                            <div class="create-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <h3>创建新知识库</h3>
+                            <p>点击创建一个全新的知识库，开始知识管理</p>
+                            <button class="create-btn create-btn--beautified" @click="openCreateKnowledgeModal"
+                                title="立即创建">立即创建</button>
+                        </div>
+                        <!--自动渲染创建的模块-->
+                        <div class="knowledge-card standard-card knowledge-card--beautified"
+                            v-for="(knowledge, index) in myKnowledgeList" :key="knowledge.id" @click="openNewPage">
+                            <div class="knowledge-card-header">
+                                <div class="knowledge-actions">
+                                    <button title="编辑" @click="openEditKnowledgeModal(knowledge)"><i
+                                            class="fas fa-edit"></i></button>
+                                    <button title="添加" @click="openAddFilesModal(knowledge)"><i
+                                            class="fa-solid fa-plus"></i></button>
+                                    <button title="管理"><i class="fa-solid fa-gears"></i></button>
+                                </div>
+                            </div>
+                            <div class="knowledge-card-body">
+                                <h3 class="knowledge-title knowledge-title--beautified">{{knowledge.name }}</h3>
+                                <p class="knowledge-desc knowledge-desc--beautified">{{knowledge.description}}</p>
+                                <div class="knowledge-meta">
+                                    <!-- 基础统计信息 -->
+                                    <span><i class="fas fa-file-alt"></i> 文档: {{ knowledge.documentCount || 0 }}</span>
+                                    <span><i class="fas fa-users"></i> 协作者: {{ knowledge.collaboratorCount || 0
+                                        }}</span>
+
+                                    <!-- 创建者信息 -->
+                                    <span><i class="fas fa-user"></i> 创建人: {{ knowledge.creater }}</span>
+                                    <span><i class="fas fa-clock"></i> 更新: {{ knowledge.updateTime || '刚刚' }}</span>
+                                    <!-- 支持文件类型（兼容数组/字符串） -->
+                                    <span>
+                                        <i class="fas fa-file"></i> 支持类型:
+                                        <template v-if="Array.isArray(knowledge.fileTypes)">
+                                            <!-- 若为数组直接遍历 -->
+                                            <span class="file-type" v-for="(type, idx) in knowledge.fileTypes"
+                                                :key="idx">
+                                                {{ type }}
+                                            </span>
+                                        </template>
+                                        <template v-else-if="typeof knowledge.fileTypes === 'string'">
+                                            <!-- 若为字符串则分割后遍历 -->
+                                            <span class="file-type"
+                                                v-for="(type, idx) in knowledge.fileTypes.split(',').map(t => t.trim())"
+                                                :key="idx">
+                                                {{ type }}
+                                            </span>
+                                        </template>
+                                        <template v-else>
+                                            <!-- 若为null/undefined则显示默认值 -->
+                                            <span class="file-type">未设置</span>
+                                        </template>
+                                    </span>
+
+                                    <!-- 关键词 -->
+                                    <span><i class="fas fa-tag"></i> 关键词: {{ knowledge.keywords || '无' }}</span>
+                                </div>
+                            </div>
+                            <div class="knowledge-card-footer">
+                                <div class="knowledge-tags">
+                                    <span class="tag" v-for="(tag, tagIndex) in (knowledge.tags || [])"
+                                        :key="tagIndex">{{ tag }}</span>
+                                </div>
+                                <div class="knowledge-access">
+                                    <i class="fas fa-eye"></i> {{ knowledge.accessCount || 0}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 创建知识库模态框 -->
+                <div v-if="isCreateKnowledgeModalVisible" class="modal-overlay" @click="closeCreateKnowledgeModal">
+                    <div class="modal" @click.stop>
+                        <div class="knowledge-header">
+                            <h2>创建知识库</h2>
+                            <div class="knowledge-controls">
+                                <button title="返回" @click="closeCreateKnowledgeModal"><i
+                                        class="fas fa-arrow-left"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="knowledge-form">
+                            <div class="form-group">
+                                <label for="knowledge-name">知识库名称</label>
+                                <input type="text" id="knowledge-name" v-model="newKnowledge.name"
+                                    placeholder="输入知识库名称">
+                            </div>
+                            <div class="form-group">
+                                <label for="knowledge-creater">知识库创建人</label>
+                                <input id="knowledge-creater" v-model="newKnowledge.creater" placeholder="输入您的昵称">
+                            </div>
+                            <div class="form-group">
+                                <label for="knowledge-description">知识库描述</label>
+                                <textarea id="knowledge-description" v-model="newKnowledge.description"
+                                    placeholder="输入知识库描述"></textarea>
+                            </div>
+                            <!-- 一级分类 -->
+                            <div class="form-group">
+                                <label for="category-level1">一级分类</label>
+                                <select id="category-level1" v-model="newKnowledge.categoryLevel1">
+                                    <option value="tech">技术研发</option>
+                                    <option value="market">市场营销</option>
+                                    <option value="hr">人力资源</option>
+                                    <option value="finance">财务管理</option>
+                                    <option value="product">产品设计</option>
+                                    <option value="support">客户支持</option>
+                                    <option value="legal">法务合规</option>
+                                </select>
+                            </div>
+                            <!-- 二级分类 -->
+                            <div class="form-group">
+                                <label for="category-level2">二级分类</label>
+                                <select id="category-level2" v-model="newKnowledge.categoryLevel2">
+                                    <!-- 根据一级分类动态生成二级分类选项 -->
+                                    <option v-if="newKnowledge.categoryLevel1 === 'tech'" value="frontend">前端开发</option>
+                                    <option v-if="newKnowledge.categoryLevel1 === 'tech'" value="backend">后端开发</option>
+                                    <option v-if="newKnowledge.categoryLevel1 === 'market'" value="social">社交媒体营销
+                                    </option>
+                                    <option v-if="newKnowledge.categoryLevel1 === 'market'" value="email">电子邮件营销
+                                    </option>
+                                    <!-- 其他二级分类选项 -->
+                                </select>
+                            </div>
+                            <!-- 支持存放的文件类型 -->
+                            <div class="form-group">
+                                <label for="file-types">支持存放的文件类型</label>
+                                <input type="text" id="file-types" v-model="newKnowledge.fileTypes"
+                                    placeholder="例如：PDF, DOCX, XLSX">
+                            </div>
+                            <!-- 关键词检索选项 -->
+                            <div class="form-group">
+                                <label for="keywords">关键词</label>
+                                <input type="text" id="keywords" v-model="newKnowledge.keywords"
+                                    placeholder="多个关键词用逗号分隔">
+                            </div>
+                            <button class="knowledge-form-confirm" @click="saveKnowledge" title="完成">完成</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- 编辑知识库模态框 -->
+                <div v-if="isEditKnowledgeModalVisible" class="modal-overlay" @click="closeEditKnowledgeModal">
+                    <div class="modal" @click.stop>
+                        <div class="knowledge-header">
+                            <h2>编辑知识库</h2>
+                            <div class="knowledge-controls">
+                                <button title="返回" @click="closeEditKnowledgeModal"><i
+                                        class="fas fa-arrow-left"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="knowledge-form">
+                            <div class="form-group">
+                                <label for="edit-knowledge-name">知识库名称</label>
+                                <input type="text" id="edit-knowledge-name" v-model="editKnowledge.name"
+                                    placeholder="输入知识库名称">
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-knowledge-creater">知识库创建人</label>
+                                <input id="edit-knowledge-creater" v-model="editKnowledge.creater" placeholder="输入您的昵称">
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-knowledge-description">知识库描述</label>
+                                <textarea id="edit-knowledge-description" v-model="editKnowledge.description"
+                                    placeholder="输入知识库描述"></textarea>
+                            </div>
+                            <!-- 一级分类 -->
+                            <div class="form-group">
+                                <label for="edit-category-level1">一级分类</label>
+                                <select id="edit-category-level1" v-model="editKnowledge.categoryLevel1">
+                                    <option value="tech">技术研发</option>
+                                    <option value="market">市场营销</option>
+                                    <option value="hr">人力资源</option>
+                                    <option value="finance">财务管理</option>
+                                    <option value="product">产品设计</option>
+                                    <option value="support">客户支持</option>
+                                </select>
+                            </div>
+                            <!-- 支持存放的文件类型 -->
+                            <div class="form-group">
+                                <label for="edit-file-types">支持存放的文件类型</label>
+                                <input type="text" id="edit-file-types" v-model="editKnowledge.fileTypes"
+                                    placeholder="例如：PDF, DOCX, XLSX">
+                            </div>
+                            <!-- 关键词检索选项 -->
+                            <div class="form-group">
+                                <label for="edit-keywords">关键词</label>
+                                <input type="text" id="edit-keywords" v-model="editKnowledge.keywords"
+                                    placeholder="多个关键词用逗号分隔">
+                            </div>
+                            <button class="knowledge-form-confirm" @click="saveEditedKnowledge" title="完成">完成</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- 添加文件模态框 -->
+                <div v-if="isAddFilesModalVisible" class="modal-overlay" @click="closeAddFilesModal">
+                    <div class="modal" @click.stop>
+                        <div class="knowledge-header">
+                            <h2>添加文件到 {{ currentKnowledge.name }}</h2>
+                            <div class="knowledge-controls">
+                                <button title="返回" @click="closeAddFilesModal"><i
+                                        class="fas fa-arrow-left"></i></button>
+                            </div>
+                        </div>
+                        <div class="knowledge-form">
+                            <!-- 已有文件列表 -->
+                            <div class="form-group">
+                                <label>已有文件</label>
+                                <ul>
+                                    <li v-for="(file, index) in currentKnowledge.files" :key="index">
+                                        {{ file.name }}
+                                        <button @click="removeFile(index)">删除</button>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- 文件类型选择 -->
+                            <div class="form-group">
+                                <label for="file-types">文件类型</label>
+                                <input type="text" id="file-types" v-model="newFileTypes"
+                                    placeholder="例如：PDF, DOCX, XLSX">
+                            </div>
+                            <!-- 文件添加区域，支持拖拽 -->
+                            <div class="form-group" @drop.prevent="onDrop" @dragover.prevent>
+                                <label>添加文件</label>
+                                <input type="file" ref="fileInput" multiple @change="onFileChange">
+                                <div class="drop-area" :class="{ 'dragover': isDragover }">
+                                    <p v-if="!isDragover">将文件拖拽到此处</p>
+                                    <p v-else>释放鼠标以添加文件</p>
+                                </div>
+                            </div>
+                            <button class="knowledge-form-confirm" @click="saveFiles" title="完成">完成</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- 知识库内容概览界面 -->
+                <div v-else-if="currentModule === 'knowledge-information'" class="knowledge-overview-page">
+                    <div class="chat-header">
+                        <h2>知识库内容概览</h2>
+
+                    </div>
+
+                    <!-- 统计卡片区域 -->
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-blue">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">知识库总数</div>
+                            </div>
+                            <div class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i> 0
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon bg-green">
+                                <i class="fas fa-folder-open"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">知识分类</div>
+                            </div>
+                            <div class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i> 0
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon bg-purple">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">总访问量</div>
+                            </div>
+                            <div class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i> 0
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon bg-orange">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">本周更新</div>
+                            </div>
+                            <div class="stat-trend down">
+                                <i class="fas fa-arrow-down"></i> 0
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 图表和列表区域 -->
+                    <div class="overview-grid">
+                        <!-- 分类占比图表 -->
+                        <div class="overview-card">
+                            <div class="card-header">
+                                <h3>知识库分类占比</h3>
+                                <div class="card-actions">
+                                    <button class="view-option active" data-view="chart">
+                                        <i class="fas fa-chart-pie"></i>
+                                    </button>
+                                    <button class="view-option" data-view="list">
+                                        <i class="fas fa-list"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="chart-container">
+                                    <canvas id="categoryChart"></canvas>
+                                    <div class="chart-legend">
+                                        <div class="legend-item">
+                                            <span class="legend-color" style="background-color: #165DFF;"></span>
+                                            <span class="legend-text">技术文档</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <span class="legend-color" style="background-color: #36CFC9;"></span>
+                                            <span class="legend-text">产品手册</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <span class="legend-color" style="background-color: #722ED1;"></span>
+                                            <span class="legend-text">流程规范</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <span class="legend-color" style="background-color: #FF7D00;"></span>
+                                            <span class="legend-text">培训资料</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <span class="legend-color" style="background-color: #F5222D;"></span>
+                                            <span class="legend-text">其他文档</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 访问趋势图表 -->
+
+
+                        <div class="overview-card">
+                            <div class="card-header">
+                                <h3>访问趋势分析</h3>
+                                <div class="card-filters">
+                                    <select class="period-select">
+                                        <option>近7天</option>
+                                        <option selected>近30天</option>
+                                        <option>近90天</option>
+                                        <option>全年</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="line-chart-container">
+                                    <canvas id="accessTrendChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 最近更新列表 -->
+                        <div class="overview-card">
+                            <div class="card-header">
+                                <h3>最近更新</h3>
+                                <a href="#" class="card-link">查看全部</a>
+                            </div>
+                            <div class="card-content">
+                                <div class="knowledge-list">
+                                    <div class="knowledge-item" v-for="i in 3" :key="i">
+                                        <div class="knowledge-icon">
+                                            <i class="fas fa-file-pdf"></i>
+                                        </div>
+                                        <div class="knowledge-info">
+                                            <div class="knowledge-title">恒生电子API接口规范 v2.4</div>
+                                            <div class="knowledge-meta">
+                                                <span class="meta-category">技术文档</span>
+                                                <span class="meta-date">刚刚</span>
+                                                <span class="meta-author">张明</span>
+                                            </div>
+                                        </div>
+                                        <div class="knowledge-actions">
+                                            <button title="查看"><i class="fas fa-eye"></i></button>
+                                            <button title="编辑"><i class="fas fa-edit"></i></button>
+                                            <button title="收藏"><i class="fas fa-star"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 热门知识库 -->
+                        <div class="overview-card">
+                            <div class="card-header">
+                                <h3>热门知识库</h3>
+                                <a href="#" class="card-link">查看全部</a>
+                            </div>
+                            <div class="card-content">
+                                <div class="popular-knowledge">
+                                    <div class="popular-item" v-for="i in 5" :key="i+5">
+                                        <div class="popular-rank">{{i}}</div>
+                                        <div class="popular-info">
+                                            <div class="popular-title">
+                                                {{ ['恒生电子系统部署指南', '数据安全管理规范', '前端开发最佳实践', '数据库优化手册',
+                                                '测试流程与标准'][i-1] }}
+                                            </div>
+                                            <div class="popular-stats">
+                                                <span><i class="fas fa-eye"></i> {{ [0,0,0,0,0][i-1]
+                                                    }}</span>
+                                                <span><i class="fas fa-download"></i> {{ [0,0,0,0,0][i-1]
+                                                    }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="popular-progress">
+                                            <div class="progress-bar" :style="{width: (100 - (i*10)) + '%'}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 查找知识库界面 -->
+                <div v-if="currentModule === 'visit-select'" class="search-container">
+                    <div class="search-header">
+                        <h2>查找知识库</h2>
+                        <div class="search-box">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" class="search-input" placeholder="输入知识库名称..." v-model="searchQuery"
+                                @keydown.enter="searchKnowledge">
+                        </div>
+                    </div>
+
+                    <!-- 常用知识库 -->
+                    <div class="frequently-used">
+                        <h3 class="frequently-title">常用知识库</h3>
+                        <div class="frequently-grid">
+                            <div class="knowledge-item" v-for="kb in frequentKnowledge" :key="kb.id">
+                                <div class="knowledge-header">
+                                    <h4 class="knowledge-title">{{ kb.name }}</h4>
+                                    <span class="access-count">{{ kb.accessCount }}次访问</span>
+                                </div>
+                                <p class="knowledge-desc">{{ kb.description }}</p>
+                                <div class="knowledge-meta">
+                                    <span>文档: {{ kb.documentCount }}</span>
+                                    <span>更新: {{ kb.lastUpdated }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 知识库分类 -->
+                    <div class="categories-container">
+                        <div class="categories-header">
+                            <h3 class="categories-title">知识库分类</h3>
+                            <a href="#" class="view-all-btn">查看全部 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="categories">
+                            <div class="category-item" @click="filterByCategory('all')">
+                                <div class="category-icon"><i class="fas fa-list"></i></div>
+                                <div class="category-name">全部</div>
+                            </div>
+                            <div class="category-item" @click="filterByCategory('tech')">
+                                <div class="category-icon"><i class="fas fa-cogs"></i></div>
+                                <div class="category-name">技术研发</div>
+                            </div>
+                            <div class="category-item" @click="filterByCategory('market')">
+                                <div class="category-icon"><i class="fas fa-bullhorn"></i></div>
+                                <div class="category-name">市场营销</div>
+                            </div>
+                            <div class="category-item" @click="filterByCategory('hr')">
+                                <div class="category-icon"><i class="fas fa-users"></i></div>
+                                <div class="category-name">人力资源</div>
+                            </div>
+                            <div class="category-item" @click="filterByCategory('finance')">
+                                <div class="category-icon"><i class="fas fa-dollar-sign"></i></div>
+                                <div class="category-name">财务管理</div>
+                            </div>
+                            <div class="category-item" @click="filterByCategory('product')">
+                                <div class="category-icon"><i class="fas fa-box"></i></div>
+                                <div class="category-name">产品设计</div>
+                            </div>
+                            <div class="category-item" @click="filterByCategory('support')">
+                                <div class="category-icon"><i class="fas fa-headset"></i></div>
+                                <div class="category-name">客户支持</div>
+                            </div>
+                            <div class="category-item" @click="filterByCategory('legal')">
+                                <div class="category-icon"><i class="fas fa-gavel"></i></div>
+                                <div class="category-name">法务合规</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 筛选区域 -->
+                    <div class="filter-section">
+                        <div class="filter-header">
+                            <h3 class="filter-title">知识库列表</h3>
+                            <div class="filter-options">
+                                <div class="filter-group">
+                                    <span class="filter-label">排序:</span>
+                                    <select class="filter-select">
+                                        <option value="access">访问量最高</option>
+                                    </select>
+                                </div>
+                                <div class="filter-group">
+                                    <span class="filter-label">状态:</span>
+                                    <select class="filter-select">
+                                        <option value="all">全部</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="category-knowledge">
+                            <h3 v-if="selectedCategory!== 'all'"> {{ selectedCategory }} 分类中访问量最高的知识库</h3>
+                            <div class="knowledge-item" v-for="kb in categoryKnowledge" :key="kb.id">
+                                <div class="knowledge-header">
+                                    <h4 class="knowledge-title">{{ kb.name }}</h4>
+                                    <span class="access-count">{{ kb.accessCount }}次访问</span>
+                                </div>
+                                <p class="knowledge-desc">{{ kb.description }}</p>
+                                <div class="knowledge-meta">
+                                    <span>文档: {{ kb.documentCount }}</span>
+                                    <span>更新: {{ kb.lastUpdated }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- 邮件模块 -->
+                <div class="mail-module" :class="{show: isMailModuleVisible}">
+                    <div class="mail-header">
+                        <h2>消息</h2>
+                        <button @click="closeMailModule" title="关闭"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="mail-content">
+                        <!-- 渲染消息列表 -->
+                        <ul v-if="mails.length > 0">
+                            <li v-for="(mail, index) in mails" :key="index">
+                                <h3>{{ mail.subject }}</h3>
+                                <p>{{ mail.content }}</p>
+                                <small>{{ mail.date }}</small>
+                            </li>
+                        </ul>
+                        <p v-else>暂无新消息</p>
+                    </div>
+                </div>
+                <!-- 历史记录模块 -->
+                <div class="mail-module" :class="{show: isHistoryModuleVisible}">
+                    <div class="mail-header">
+                        <h2>历史记录</h2>
+                        <button @click="closeHistoryModule" title="关闭"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="mail-content">
+                        <!-- 渲染历史记录列表 -->
+                        <ul v-if="histories.length > 0">
+                            <li v-for="(history, index) in histories" :key="index">
+                                <h3>{{ history.title }}</h3>
+                                <p>{{ history.description }}</p>
+                                <small>{{ history.date }}</small>
+                            </li>
+                        </ul>
+                        <p v-else>暂无历史记录</p>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+        </section>
+
+    </div>
+</body>
+
+<script src="./main.js"></script>
+
+</html>
