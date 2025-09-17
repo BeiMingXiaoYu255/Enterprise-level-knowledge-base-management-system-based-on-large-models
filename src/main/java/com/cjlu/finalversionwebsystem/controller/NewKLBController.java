@@ -5,7 +5,10 @@ import com.cjlu.finalversionwebsystem.service.Interface.NewKLBInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import com.cjlu.finalversionwebsystem.utils.CookieService;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -15,7 +18,7 @@ import java.util.Map;
 public class NewKLBController {
     @Autowired
      private NewKLBInterface klbservice;
-
+    
     @PostMapping("creat")
     public Result createKLB(@RequestBody Map<String, Object> request) {
         try {
@@ -39,5 +42,20 @@ public class NewKLBController {
             log.error("Error during KLB creation: ", e);
             return Result.error("知识库创建失败: " + e.getMessage());
         }
+    }
+    
+    
+    public String getUserNameByCookie(HttpServletRequest httpServletRequest){
+        return CookieService.getUsernameFromCookie(httpServletRequest);
+    }
+
+    @PostMapping("selectKLBByCreatorName")
+    public Result selectKLBByCreatorName(HttpServletRequest httpServletRequest) {
+        String creatorName = getUserNameByCookie(httpServletRequest);
+        if (creatorName == null) {
+            return Result.error("未找到创建者名称");
+        }
+        List<Map<String, Object>> klbList = klbservice.selectKLBByKLBCreator(creatorName);
+        return Result.success(klbList);
     }
 }

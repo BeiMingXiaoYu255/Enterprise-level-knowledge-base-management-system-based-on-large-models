@@ -1,9 +1,12 @@
 package com.cjlu.finalversionwebsystem.utils;
 
+import org.springframework.stereotype.Service;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 
+@Service
 public class CookieService {
 
     JWTUtils jwtUtils = new JWTUtils();
