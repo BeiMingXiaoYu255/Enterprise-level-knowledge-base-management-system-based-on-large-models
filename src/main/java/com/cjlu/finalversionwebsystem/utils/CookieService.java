@@ -19,24 +19,11 @@ public class CookieService {
         // 打印请求信息用于调试
         log.debug("尝试获取Cookie: {}，请求来源: {}", cookieName, request.getHeader("Origin"));
 
-        // 检查请求是否包含Cookie头
-        String cookieHeader = request.getHeader("Cookie");
-        log.debug("请求中的Cookie头: {}", cookieHeader);
-
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            log.debug("请求中没有任何Cookie");
-            return null;
-        }
-
-        // 遍历所有Cookie并打印
-        log.debug("请求中包含的Cookie列表:");
-        for (Cookie cookie : cookies) {
-            log.debug("Cookie名称: {}, 路径: {}, 域名: {}, 值长度: {}",
-                    cookie.getName(), cookie.getPath(), cookie.getDomain(), cookie.getValue().length());
-            if (cookie.getName().equals(cookieName)) {
-                return cookie.getValue();
-            }
+        // 从Authorization头中获取Cookie值
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7); // 去掉"Bearer "前缀
+            return token;
         }
 
         log.debug("未找到名为 {} 的Cookie", cookieName);

@@ -2,12 +2,15 @@ package com.cjlu.finalversionwebsystem.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @Configuration
 public class CorsConfig {
     @Bean
@@ -15,10 +18,11 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // 关键修复：当允许Cookie时，不能使用*，必须指定具体的前端域名
-        // 替换为你的前端实际域名，这里适配你的127.0.0.1:5500
-        config.addAllowedOrigin("http://127.0.0.1:5500");
+        // 替换为你的前端实际域名，这里适配你的127.0.0.1:5500x
+        // 替换原来的addAllowedOrigin
+        config.addAllowedOriginPattern("http://127.0.0.1:5500");
+        config.addAllowedOriginPattern("http://localhost:8080");
         // 如果有多个前端域名，依次添加
-        // config.addAllowedOrigin("http://localhost:8080");
 
         // 允许的请求头
         config.setAllowedHeaders(Arrays.asList(
