@@ -44,6 +44,8 @@ public interface NewKLBInterface {
      */
     void updateKLBById(int id, String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus);
 
+    
+    
     /**
      * 根据ID查询知识库记录
      *
@@ -66,4 +68,20 @@ public interface NewKLBInterface {
      * @return 知识库记录列表
      */
     List<Map<String, Object>> selectKLBByKLBCreator(String KLBCreator);
+
+    /**
+     * 根据知识库名称更新知识库记录
+     *
+     * @param KLBName                 知识库名称
+     * @param KLBCreator              创建者
+     * @param primaryClassification   一级分类
+     * @param secondaryClassification 二级分类
+     * @param KLBReviseTime           修改时间
+     * @param supportedDataFormats    支持的数据格式
+     * @param KLBSearchStrategy       搜索策略
+     * @param description             描述
+     * @param creatTime               创建时间
+     * @param KLBStatus               状态
+     */
+    void updateKLBByKLBName(String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus);
 }

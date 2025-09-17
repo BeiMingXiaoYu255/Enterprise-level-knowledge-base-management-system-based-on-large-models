@@ -55,4 +55,9 @@ public class NewKLBServiceImpl implements NewKLBInterface {
     public List<Map<String, Object>> selectKLBByKLBCreator(String KLBCreator) {
         return klbMapper.selectKLBByKLBCreator(KLBCreator);
     }
+
+    @Override
+    public void updateKLBByKLBName(String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus) {
+        klbMapper.updateKLBByKLBName(KLBName, KLBCreator, primaryClassification, secondaryClassification, KLBReviseTime, supportedDataFormats, KLBSearchStrategy, description, creatTime, KLBStatus);
+    }
 }
