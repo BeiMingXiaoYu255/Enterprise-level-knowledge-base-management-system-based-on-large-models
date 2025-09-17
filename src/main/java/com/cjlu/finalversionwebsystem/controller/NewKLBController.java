@@ -58,4 +58,15 @@ public class NewKLBController {
         List<Map<String, Object>> klbList = klbservice.selectKLBByKLBCreator(creatorName);
         return Result.success(klbList);
     }
+
+    @PostMapping("selectAllKLB")
+    public Result selectAllKLB() {
+        try {
+            List<Map<String, Object>> klbList = klbservice.selectAllKLBs();
+            return Result.success(klbList);
+        } catch (Exception e) {
+            log.error("Error during KLB selection: ", e);
+            return Result.error("查询所有知识库失败: " + e.getMessage());
+        }
+    }
 }
