@@ -55,7 +55,7 @@ public class NewKLBController {
         if (creatorName == null) {
             return Result.error("未找到创建者名称");
         }
-        List<Map<String, Object>> klbList = klbservice.selectKLBByKLBCreator(creatorName);
+        List<Map<String, Object>> klbList = klbservice.selectKLBByKLBCreator("张三");
         return Result.success(klbList);
     }
 
