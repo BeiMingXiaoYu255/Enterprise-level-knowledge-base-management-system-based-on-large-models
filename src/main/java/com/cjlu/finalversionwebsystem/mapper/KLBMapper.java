@@ -39,7 +39,7 @@ public interface KLBMapper {
     void deleteKLB(@Param("KLBName") String KLBName);
 
     // 根据创建者查询KLB记录
-    @Select("SELECT * FROM klb WHERE KLBCreator = #{KLBCreator}")
+    @Select("SELECT * FROM klb WHERE klb_creator = #{KLBCreator}")
     List<KLB> selectKLBByKLBCreator(@Param("KLBCreator") String KLBCreator);
 
     // 根据关键词查询KLB记录

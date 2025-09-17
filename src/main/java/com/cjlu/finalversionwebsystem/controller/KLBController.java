@@ -59,6 +59,8 @@ public class KLBController {
         // 请根据实际情况实现
         return CookieService.getUsernameFromCookie(httpServletRequest);
     }
+    
+    
 
 
     //删除知识库
@@ -94,14 +96,6 @@ public class KLBController {
         return klbService.updateKLB(klb);
     }
 
-    //通过创建者查询知识库
-    @PostMapping("/selectKLBByKLBCreator")
-    public Result selectKLBByKLBCreator(@RequestBody Map<String, Object> request, HttpServletRequest httpServletRequest) { // 通过创建者查询知识库
-        KLB klb = new KLB(); // 创建一个新的知识库对象
-        klb.setKLBCreator(getUserName(httpServletRequest)); // 设置创建者
-        return klbService.selectKLBByKLBCreator(klb); // 调用服务层方法查询知识库
-    }
-
     //通过知识库名称查询知识库
     @PostMapping("/selectKLBByKLBName")
     public Result selectKLBByKLBName(@RequestBody Map<String, Object> request) { // 通过知识库名称查询知识库
@@ -135,6 +129,21 @@ public class KLBController {
         klb.setKLBName((String) request.get("KLBName")); // 设置知识库名称
         String fileName = (String) request.get("fileName"); // 获取文件名
         return klbService.openFilesByKLBNameAndFileName(klb, fileName); // 调用服务层方法打开文件
+    }
+
+    //通过创建者查询知识库
+    @PostMapping("/selectKLBByKLBCreator")
+    public Result selectKLBByKLBCreator( HttpServletRequest httpServletRequest) {
+        try {
+            KLB klb = new KLB(); // 创建一个新的知识库对象
+            //klb.setKLBCreator(getUserName(httpServletRequest)); // 设置创建者
+            klb.setKLBCreator("BeiMingXiaoYu");
+            log.info("Selecting knowledge libraries by creator: {}", klb); // 记录日志：正在通过创建者查询知识库
+            return klbService.selectKLBByKLBCreator(klb); // 调用服务层方法查询知识库
+        } catch (Exception e) {
+            log.error("Failed to select knowledge libraries by creator: {}", e.getMessage(), e); // 记录错误日志：通过创建者查询知识库失败
+            return Result.error("通过创建者查询知识库失败: " + e.getMessage()); // 返回错误结果
+        }
     }
 
     //通过一级分类查询最高访问次数的5个知识库
