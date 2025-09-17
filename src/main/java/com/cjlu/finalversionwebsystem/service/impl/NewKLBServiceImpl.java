@@ -37,8 +37,8 @@ public class NewKLBServiceImpl implements NewKLBInterface {
     }
 
     @Override
-    public void updateKLBById(int id, String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus, String location, Integer accessCount) {
-        klbMapper.updateKLBById(id, KLBName, KLBCreator, primaryClassification, secondaryClassification, KLBReviseTime, supportedDataFormats, KLBSearchStrategy, description, creatTime, KLBStatus, location, accessCount);
+    public void updateKLBById(int id, String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus) {
+        klbMapper.updateKLBById(id, KLBName, KLBCreator, primaryClassification, secondaryClassification, KLBReviseTime, supportedDataFormats, KLBSearchStrategy, description, creatTime, KLBStatus);
     }
 
     @Override

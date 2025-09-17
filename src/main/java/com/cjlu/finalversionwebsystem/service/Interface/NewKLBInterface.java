@@ -17,8 +17,6 @@ public interface NewKLBInterface {
      * @param description             描述
      * @param creatTime               创建时间
      * @param KLBStatus               状态
-     * @param location                位置
-     * @param accessCount             访问次数
      */
     void insertKLB(String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus);
 
@@ -43,10 +41,8 @@ public interface NewKLBInterface {
      * @param description             描述
      * @param creatTime               创建时间
      * @param KLBStatus               状态
-     * @param location                位置
-     * @param accessCount             访问次数
      */
-    void updateKLBById(int id, String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus, String location, Integer accessCount);
+    void updateKLBById(int id, String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus);
 
     /**
      * 根据ID查询知识库记录

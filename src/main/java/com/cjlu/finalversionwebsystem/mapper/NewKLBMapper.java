@@ -27,10 +27,23 @@ public interface NewKLBMapper {
             "<if test='description != null'>description = #{description}, </if>" +
             "<if test='creatTime != null'>creatTime = #{creatTime}, </if>" +
             "<if test='KLBStatus != null'>KLBStatus = #{KLBStatus}, </if>" +
-            "<if test='location != null'>location = #{location}, </if>" +
-            "<if test='accessCount != null'>accessCount = #{accessCount}, </if>" +
             "WHERE id = #{id}</script>")
-    void updateKLBById(@Param("id") int id, @Param("KLBName") String KLBName, @Param("KLBCreator") String KLBCreator, @Param("primaryClassification") String primaryClassification, @Param("secondaryClassification") String secondaryClassification, @Param("KLBReviseTime") String KLBReviseTime, @Param("supportedDataFormats") String supportedDataFormats, @Param("KLBSearchStrategy") String KLBSearchStrategy, @Param("description") String description, @Param("creatTime") String creatTime, @Param("KLBStatus") String KLBStatus, @Param("location") String location, @Param("accessCount") Integer accessCount);
+    void updateKLBById(@Param("id") int id, @Param("KLBName") String KLBName, @Param("KLBCreator") String KLBCreator, @Param("primaryClassification") String primaryClassification, @Param("secondaryClassification") String secondaryClassification, @Param("KLBReviseTime") String KLBReviseTime, @Param("supportedDataFormats") String supportedDataFormats, @Param("KLBSearchStrategy") String KLBSearchStrategy, @Param("description") String description, @Param("creatTime") String creatTime, @Param("KLBStatus") String KLBStatus);
+
+    @Update("<script>UPDATE klb SET " +
+            "<if test='KLBName != null'>KLBName = #{KLBName}, </if>" +
+            "<if test='KLBCreator != null'>KLBCreator = #{KLBCreator}, </if>" +
+            "<if test='primaryClassification != null'>primaryClassification = #{primaryClassification}, </if>" +
+            "<if test='secondaryClassification != null'>secondaryClassification = #{secondaryClassification}, </if>" +
+            "<if test='KLBReviseTime != null'>KLBReviseTime = #{KLBReviseTime}, </if>" +
+            "<if test='supportedDataFormats != null'>supportedDataFormats = #{supportedDataFormats}, </if>" +
+            "<if test='KLBSearchStrategy != null'>KLBSearchStrategy = #{KLBSearchStrategy}, </if>" +
+            "<if test='description != null'>description = #{description}, </if>" +
+            "<if test='creatTime != null'>creatTime = #{creatTime}, </if>" +
+            "<if test='KLBStatus != null'>KLBStatus = #{KLBStatus}, </if>" +
+            "WHERE KLBName = #{KLBName}</script>")
+    void updateKLBByKLBName(@Param("KLBName") String KLBName, @Param("KLBCreator") String KLBCreator, @Param("primaryClassification") String primaryClassification, @Param("secondaryClassification") String secondaryClassification, @Param("KLBReviseTime") String KLBReviseTime, @Param("supportedDataFormats") String supportedDataFormats, @Param("KLBSearchStrategy") String KLBSearchStrategy, @Param("description") String description, @Param("creatTime") String creatTime, @Param("KLBStatus") String KLBStatus);
+
 
     @Select("SELECT * FROM klb WHERE id = #{id}")
     Map<String, Object> selectKLBById(@Param("id") int id);
@@ -43,4 +56,6 @@ public interface NewKLBMapper {
     
     @Select("SELECT COUNT(*) FROM klb WHERE KLBName = #{KLBName}")
     int existsByKLBName(@Param("KLBName") String KLBName);
+
+
 }
