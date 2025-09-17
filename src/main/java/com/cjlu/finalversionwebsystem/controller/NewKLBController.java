@@ -33,9 +33,8 @@ public class NewKLBController {
             String description = (String) request.get("description");
             String creatTime = java.time.LocalDateTime.now().toString();
             String KLBStatus = (String) request.get("KLBStatus");
-            String location = (String) request.get("location");
 
-            klbservice.insertKLB(KLBName, KLBCreator, primaryClassification, secondaryClassification, KLBReviseTime, supportedDataFormats, KLBSearchStrategy, description, creatTime, KLBStatus, location);
+            klbservice.insertKLB(KLBName, KLBCreator, primaryClassification, secondaryClassification, KLBReviseTime, supportedDataFormats, KLBSearchStrategy, description, creatTime, KLBStatus);
             log.info("KLB created successfully: {}", KLBName);
             return Result.success("知识库创建成功");
         } catch (Exception e) {

@@ -18,10 +18,15 @@ public class NewKLBServiceImpl implements NewKLBInterface {
 
 
     @Override
-    public void insertKLB(String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus, String location) {
+    public void insertKLB(String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus) {
         int count = klbMapper.existsByKLBName(KLBName);
         if (count > 0) {
             throw new RuntimeException("KLB with name " + KLBName + " already exists");
+        }
+        String location = "D:\\基于大模型的企业级知识管理系统\\知识库\\" + KLBName;
+        java.io.File directory = new java.io.File(location);
+        if (!directory.exists()) {
+            directory.mkdirs();
         }
         klbMapper.insertKLB(KLBName, KLBCreator, primaryClassification, secondaryClassification, KLBReviseTime, supportedDataFormats, KLBSearchStrategy, description, creatTime, KLBStatus, location);
     }

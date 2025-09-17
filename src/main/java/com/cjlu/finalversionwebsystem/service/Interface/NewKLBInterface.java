@@ -20,7 +20,7 @@ public interface NewKLBInterface {
      * @param location                位置
      * @param accessCount             访问次数
      */
-    void insertKLB(String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus, String location);
+    void insertKLB(String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus);
 
     /**
      * 根据ID删除知识库记录
