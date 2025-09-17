@@ -25,9 +25,9 @@ public interface KLBMapper {
             ")")
     void createKLBTable();
 
-    // 插入新的KLB记录
     // 新增知识库记录（不使用ListTypeHandler）
     @Insert("INSERT INTO klb (KLBName, KLBCreator, primaryClassification, secondaryClassification, KLBReviseTime, " +
+            // 插入新的KLB记录
             "supportedDataFormats, KLBSearchStrategy, description, creatTime, KLBStatus, location,accessCount) " +
             "VALUES (#{KLBName}, #{KLBCreator}, #{primaryClassification}, #{secondaryClassification}, #{KLBReviseTime}, " +
             // 直接使用转换后的字符串字段，无需typeHandler
@@ -39,7 +39,7 @@ public interface KLBMapper {
     void deleteKLB(@Param("KLBName") String KLBName);
 
     // 根据创建者查询KLB记录
-    @Select("SELECT * FROM klb WHERE klb_creator = #{KLBCreator}")
+    @Select("SELECT * FROM klb WHERE KLBCreator = #{KLBCreator}")
     List<KLB> selectKLBByKLBCreator(@Param("KLBCreator") String KLBCreator);
 
     // 根据关键词查询KLB记录

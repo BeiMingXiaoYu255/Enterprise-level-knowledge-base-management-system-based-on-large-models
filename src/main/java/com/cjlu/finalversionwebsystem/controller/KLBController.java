@@ -33,7 +33,7 @@ public class KLBController {
             KLB klb = new KLB(); // 创建一个新的知识库对象
 
             klb.setKLBName((String) request.get("KLBName")); // 设置知识库名称
-            klb.setKLBCreator(getUserName(httpServletRequest)); // 设置创建者
+            klb.setKLBCreator("BeiMingXiaoYu"); // 设置创建者
             klb.setDescription((String) request.get("KLBDescription")); // 设置描述
             klb.setKLBStatus((String) request.get("KLBStatus")); // 设置状态
             klb.setKLBSearchStrategy((String) request.get("KLBSearchStrategy")); // 设置搜索策略
