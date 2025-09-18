@@ -57,5 +57,10 @@ public interface NewKLBMapper {
     @Select("SELECT COUNT(*) FROM klb WHERE KLBName = #{KLBName}")
     int existsByKLBName(@Param("KLBName") String KLBName);
 
+    @Select("SELECT * FROM klb WHERE primaryClassification = #{primaryClassification}")
+    List<Map<String, Object>> selectKLBByPrimaryClassification(@Param("primaryClassification") String primaryClassification);
+
+    @Select("SELECT * FROM klb WHERE secondaryClassification = #{secondaryClassification}")
+    List<Map<String, Object>> selectAllKLBBySecondaryClassification(@Param("secondaryClassification") String secondaryClassification);
 
 }
