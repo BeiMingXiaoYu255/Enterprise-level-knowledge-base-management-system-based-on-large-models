@@ -99,6 +99,31 @@ public class FileStorageService {
         return uniqueFileName;
     }
 
+    public String storeFileToLocationWithoutMd(MultipartFile file, String destinationDir) throws Exception {
+        String originalFileName = file.getOriginalFilename();
+        String fileExtension = "";
+
+        if (originalFileName != null && originalFileName.contains(".")) {
+            fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+        }
+
+        String baseFileName = originalFileName.substring(0, originalFileName.length() - fileExtension.length());
+        String uniqueFileName = originalFileName;
+        int counter = 1;
+
+        while (fileExists(destinationDir, uniqueFileName)) {
+            uniqueFileName = baseFileName + "(" + counter + ")" + fileExtension;
+            counter++;
+        }
+
+        Path targetLocation = Paths.get(destinationDir).resolve(uniqueFileName);
+
+        // 保存文件
+        file.transferTo(targetLocation);
+
+        return uniqueFileName;
+    }
+
     // 获取文件列表
     public List<FileInfo> getFileList() throws IOException {
         File directory = new File(uploadDir);
