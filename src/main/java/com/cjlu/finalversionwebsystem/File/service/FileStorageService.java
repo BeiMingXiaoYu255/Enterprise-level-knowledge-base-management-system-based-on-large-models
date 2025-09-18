@@ -21,15 +21,8 @@ import java.util.stream.Collectors;
 @Service
 public class FileStorageService {
 
-    @Value("D:\\基于大模型的企业级知识管理系统\\知识库")
-    private String uploadDir;
 
-    // 通过构造函数注入配置并初始化目录
-    public FileStorageService(@Value("D:\\基于大模型的企业级知识管理系统\\知识库") String uploadDir) {
-        this.uploadDir = uploadDir;
-        // 初始化上传目录
-        initUploadDirectory();
-    }
+    private static String uploadDir = "D:\\基于大模型的企业级知识管理系统\\知识库";
 
     // 初始化上传目录的方法
     private void initUploadDirectory() {

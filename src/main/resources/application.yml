@@ -10,7 +10,7 @@ logging:
     dev.langchain4j: DEBUG
 
 server:
-  port: 8000
+  port: 8080
 
 spring:
   datasource:
@@ -74,5 +74,10 @@ langchain4j:
       model-name: text-embedding-v3
       log-requests: true
       log-responses: true
-
+  
+  spring:
+    servlet:
+      multipart:
+        max-file-size: 1024MB
+        max-request-size: 1024MB
 

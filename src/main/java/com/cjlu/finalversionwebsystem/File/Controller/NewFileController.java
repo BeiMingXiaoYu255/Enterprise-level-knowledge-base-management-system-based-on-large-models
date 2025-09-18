@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+@RequestMapping("FILE")
 @RestController
 public class NewFileController {
 
