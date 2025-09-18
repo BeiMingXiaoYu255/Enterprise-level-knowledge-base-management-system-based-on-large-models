@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("ProfilePicture")
@@ -22,8 +24,12 @@ public class ProfilePictureController {
     }
 
     @GetMapping("/url")
-    public ResponseEntity<String> getProfilePictureUrlByUsername(HttpServletRequest httpServletRequest) {
+    public ResponseEntity<Map<String, String>> getProfilePictureUrlByUsername(HttpServletRequest httpServletRequest) {
         String url = profilePictureService.getProfilePictureUrlByUsername(httpServletRequest);
-        return ResponseEntity.ok(url);
+        String username = profilePictureService.getUserNameByCookie(httpServletRequest);
+        Map<String, String> response = new HashMap<>();
+        response.put("url", url);
+        response.put("username", username);
+        return ResponseEntity.ok(response);
     }
 }
