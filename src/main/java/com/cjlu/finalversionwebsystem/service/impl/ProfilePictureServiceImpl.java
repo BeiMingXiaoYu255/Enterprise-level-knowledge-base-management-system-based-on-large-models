@@ -51,8 +51,19 @@ public class ProfilePictureServiceImpl {
             log.error("Error saving user profile picture: {}", e.getMessage());
         }
     }
+    
+    
 
     public String getProfilePictureUrlByUsername(String username) {
         return profilePictureMapper.selectProfilePictureByUserName(username).getProfile_picture_location();
+    }
+
+    public String getProfilePicturePathByUsername(String username) {
+        ProfilePicture profilePicture = profilePictureMapper.selectProfilePictureByUserName(username);
+        if (profilePicture != null) {
+            return profilePicture.getProfile_picture_location();
+        } else {
+            return null;
+        }
     }
 }
