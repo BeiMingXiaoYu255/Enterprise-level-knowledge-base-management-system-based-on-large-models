@@ -42,7 +42,15 @@ public class FileStorageService {
             fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
         }
 
-        String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
+        String baseFileName = originalFileName.substring(0, originalFileName.length() - fileExtension.length());
+        String uniqueFileName = originalFileName;
+        int counter = 1;
+
+        while (fileExists(uniqueFileName)) {
+            uniqueFileName = baseFileName + "(" + counter + ")" + fileExtension;
+            counter++;
+        }
+
         Path targetLocation = Paths.get(uploadDir).resolve(uniqueFileName);
 
         // 保存文件
