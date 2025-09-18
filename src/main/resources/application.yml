@@ -10,7 +10,7 @@ logging:
     dev.langchain4j: DEBUG
 
 server:
-  port: 8080
+  port: 8000
 
 spring:
   datasource:
@@ -49,7 +49,6 @@ spring:
 klb:
   storage:
     path: D:\KLB\
-
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
@@ -75,3 +74,5 @@ langchain4j:
       model-name: text-embedding-v3
       log-requests: true
       log-responses: true
+
+
