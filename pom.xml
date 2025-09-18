@@ -177,6 +177,16 @@
             <artifactId>tess4j</artifactId>
             <version>5.8.0</version>
         </dependency>
+        <dependency>
+            <groupId>ws.schild</groupId>
+            <artifactId>jave-core</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.api.grpc</groupId>
+            <artifactId>proto-google-cloud-speech-v2</artifactId>
+            <version>4.9.0</version>
+        </dependency>
     </dependencies>
 
     <build>
