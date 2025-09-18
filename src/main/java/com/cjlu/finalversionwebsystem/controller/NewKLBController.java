@@ -68,4 +68,30 @@ public class NewKLBController {
             return Result.error("查询所有知识库失败: " + e.getMessage());
         }
     }
+
+    @PostMapping("updateKLB")
+    public Result updateKLB(@RequestBody Map<String, Object> request) {
+        try {
+            log.info("Received KLB update request: {}", request);
+            int id = (int) request.get("id");
+            String KLBName = (String) request.get("KLBName");
+            String KLBCreator = (String) request.get("KLBCreator");
+            String primaryClassification = (String) request.get("primaryClassification");
+            String secondaryClassification = (String) request.get("secondaryClassification");
+            String KLBReviseTime = java.time.LocalDateTime.now().toString();
+            String supportedDataFormats = (String) request.get("supportedDataFormats");
+            String KLBSearchStrategy = (String) request.get("KLBSearchStrategy");
+            String description = (String) request.get("description");
+            String creatTime = (String) request.get("creatTime");
+            String KLBStatus = (String) request.get("KLBStatus");
+
+            klbservice.updateKLBById(id, KLBName, KLBCreator, primaryClassification, secondaryClassification, KLBReviseTime, supportedDataFormats, KLBSearchStrategy, description, creatTime, KLBStatus);
+            log.info("KLB updated successfully: {}", KLBName);
+            return Result.success("知识库更新成功");
+        } catch (Exception e) {
+            log.error("Error during KLB update: ", e);
+            return Result.error("更新知识库信息失败" + e.getMessage());
+        }
+    }
+
 }
