@@ -2,7 +2,10 @@ package com.cjlu.finalversionwebsystem.File.service;
 
 
 import com.cjlu.finalversionwebsystem.File.model.FileInfo;
-import org.springframework.beans.factory.annotation.Value;
+import com.cjlu.finalversionwebsystem.File.util.*;
+import com.cjlu.finalversionwebsystem.entity.Result;
+import com.rometools.utils.IO;
+import net.sourceforge.tess4j.TesseractException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,8 +36,7 @@ public class FileStorageService {
     }
 
     // 存储文件
-    public String storeFile(MultipartFile file) throws IOException {
-        // 生成唯一文件名，避免冲突
+    public String storeFile(MultipartFile file) throws Exception {
         String originalFileName = file.getOriginalFilename();
         String fileExtension = "";
 
@@ -55,6 +57,40 @@ public class FileStorageService {
 
         // 保存文件
         file.transferTo(targetLocation);
+
+        // 创建一个md格式的副本
+        String markdownFileName = baseFileName + ".md";
+        Path markdownTargetLocation = Paths.get(uploadDir).resolve(markdownFileName);
+
+        switch (fileExtension.toLowerCase()) {
+            case ".pdf":
+                convertPDFToMarkdown(targetLocation.toString(), markdownTargetLocation.toString());
+                break;
+            case ".doc":
+            case ".docx":
+                convertDOCToMarkdown(targetLocation.toString(), markdownTargetLocation.toString());
+                break;
+            case ".txt":
+                convertTxtToMarkdown(targetLocation.toString(), markdownTargetLocation.toString());
+                break;
+            case ".xls":
+            case ".xlsx":
+                convertExcelToMarkdown(targetLocation.toString(), markdownTargetLocation.toString());
+                break;
+            case ".html":
+            case ".htm":
+                convertHtmlToMarkdown(targetLocation.toString(), markdownTargetLocation.toString());
+                break;
+            case ".jpg":
+            case ".jpeg":
+            case ".png":
+            case ".gif":
+                convertImageMarkdown(targetLocation.toString(), markdownTargetLocation.toString());
+                break;
+            default:
+                // 不支持的文件类型，不创建md副本
+                break;
+        }
 
         return uniqueFileName;
     }
@@ -97,4 +133,29 @@ public class FileStorageService {
         Path filePath = getFilePath(fileName);
         return Files.exists(filePath) && Files.isRegularFile(filePath);
     }
+
+    private void convertPDFToMarkdown(String pdf_file_path,String markdown_file_path) throws IOException {
+        PdfToMarkdownConverter.convert(pdf_file_path,markdown_file_path);
+    }
+
+    private void convertDOCToMarkdown(String doc_file_path,String markdown_file_path) throws Exception {
+        DocToMarkdownConverter.convert(doc_file_path,markdown_file_path);
+    }
+
+    private void convertTxtToMarkdown(String txt_file_path,String markdown_file_path) throws Exception {
+        TxtToMarkdownConverter.convert(txt_file_path,markdown_file_path);
+    }
+
+    private void convertExcelToMarkdown(String excel_file_path,String markdown_file_path) throws IOException {
+        ExcelToMarkdownConverter.convert(excel_file_path,markdown_file_path);
+    }
+
+    private void convertHtmlToMarkdown(String html_file_path,String markdown_file_path) throws IOException{
+        HtmlToMarkdownConverter.convert(html_file_path,markdown_file_path);
+    }
+
+    private void convertImageMarkdown(String image_file_path,String markdown_file_path) throws TesseractException, IOException {
+        ImageToMarkdownConverter.processImage(image_file_path,markdown_file_path);
+    }
+
 }

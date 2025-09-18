@@ -29,12 +29,18 @@ import java.util.stream.Collectors;
 
 /**
  * PDF转Markdown工具类
- * 支持识别图片、表格、加粗文本和标题
+ * 支持识别图片、表格、加粗文本、标题和代码块
  */
 public class PdfToMarkdownConverter {
 
     // 图片保存目录
     private static final String IMAGE_DIR = "images/";
+
+    // 常见的代码字体（等宽字体）
+    private static final Set<String> CODE_FONTS = Set.of(
+            "courier", "consolas", "monaco", "menlo", "andale mono",
+            "lucida console", "monospace", "courier new"
+    );
 
     // 文本块信息类，用于记录文本及其样式
     private static class TextBlock {
@@ -44,9 +50,9 @@ public class PdfToMarkdownConverter {
         float fontSize;
         String fontName;
         boolean isBold;
+        boolean isCode; // 新增：是否为代码
         int pageNumber;
 
-        // 构造函数和getter/setter省略
         public TextBlock(String text, float x, float y, float fontSize, String fontName, int pageNumber) {
             this.text = text;
             this.x = x;
@@ -55,6 +61,7 @@ public class PdfToMarkdownConverter {
             this.fontName = fontName;
             this.pageNumber = pageNumber;
             this.isBold = isFontBold(fontName);
+            this.isCode = isCodeFont(fontName); // 新增：判断是否为代码字体
         }
 
         public String getText() { return text; }
@@ -63,6 +70,7 @@ public class PdfToMarkdownConverter {
         public float getFontSize() { return fontSize; }
         public String getFontName() { return fontName; }
         public boolean isBold() { return isBold; }
+        public boolean isCode() { return isCode; } // 新增：获取是否为代码
         public int getPageNumber() { return pageNumber; }
     }
 
@@ -75,6 +83,18 @@ public class PdfToMarkdownConverter {
         }
         fontName = fontName.toLowerCase();
         return fontName.contains("bold") || fontName.contains("heavy") || fontName.contains("black");
+    }
+
+    /**
+     * 新增：判断字体是否为代码字体（等宽字体）
+     */
+    private static boolean isCodeFont(String fontName) {
+        if (StrUtil.isEmpty(fontName)) {
+            return false;
+        }
+        String lowerFontName = fontName.toLowerCase();
+        // 检查字体名是否包含常见代码字体
+        return CODE_FONTS.stream().anyMatch(lowerFontName::contains);
     }
 
     /**
@@ -204,7 +224,7 @@ public class PdfToMarkdownConverter {
     }
 
     /**
-     * 处理文本块并转换为Markdown格式
+     * 处理文本块并转换为Markdown格式，新增代码块处理
      */
     private static void processTextBlocks(List<TextBlock> textBlocks, List<String> tableMarkdowns, Writer writer) throws IOException {
         // 按页码和位置排序文本块
@@ -227,21 +247,71 @@ public class PdfToMarkdownConverter {
         // 处理文本块
         Float prevFontSize = null;
         boolean newParagraph = false;
+        boolean inCodeBlock = false; // 新增：标记是否在代码块中
+        float codeBlockStartX = 0;   // 新增：代码块起始X坐标，用于判断缩进
 
         for (TextBlock block : textBlocks) {
             String text = block.getText().replace("\r\n", " ").replace("\n", " ").trim();
             if (StrUtil.isEmpty(text)) {
+                // 如果在代码块中，保留空行
+                if (inCodeBlock) {
+                    writer.write("\n");
+                }
                 newParagraph = true;
                 continue;
             }
 
-            // 处理标题
+            // 处理标题（标题优先于代码块）
             int headerLevel = getHeaderLevel(block.getFontSize(), sortedSizes);
             if (headerLevel > 0) {
+                // 如果正在代码块中，先关闭代码块
+                if (inCodeBlock) {
+                    writer.write("\n```\n");
+                    inCodeBlock = false;
+                }
+
                 writer.write("\n" + StrUtil.repeat("#", headerLevel) + " " + text + "\n\n");
                 prevFontSize = block.getFontSize();
                 newParagraph = false;
                 continue;
+            }
+
+            // 新增：处理代码块
+            if (block.isCode()) {
+                // 如果不在代码块中，开始一个新的代码块
+                if (!inCodeBlock) {
+                    // 确保与前一段落有间隔
+                    if (prevFontSize != null) {
+                        writer.write("\n");
+                    }
+                    writer.write("```\n");
+                    inCodeBlock = true;
+                    codeBlockStartX = block.getX(); // 记录代码块起始X坐标
+                } else {
+                    // 检查是否需要换行（不同行的内容）
+                    float yDiff = Math.abs(block.getY() - prevFontSize);
+                    if (yDiff > block.getFontSize() * 0.5) { // 超过半个字体高度视为新行
+                        writer.write("\n");
+                    }
+                }
+
+                // 处理代码缩进（根据与代码块起始位置的X坐标差）
+                float indent = block.getX() - codeBlockStartX;
+                if (indent > 1) { // 超过1单位的偏移视为缩进
+                    int spaces = (int)(indent / 5); // 每5个单位转换为1个空格
+                    writer.write(StrUtil.repeat(" ", Math.max(1, spaces)));
+                }
+
+                writer.write(text);
+                prevFontSize = block.getY(); // 对于代码块，记录Y坐标用于换行判断
+                newParagraph = false;
+                continue;
+            } else if (inCodeBlock) {
+                // 如果当前不是代码块但之前在代码块中，关闭代码块
+                writer.write("\n```\n\n");
+                inCodeBlock = false;
+                prevFontSize = null;
+                newParagraph = true;
             }
 
             // 处理段落分隔
@@ -261,6 +331,11 @@ public class PdfToMarkdownConverter {
             }
 
             prevFontSize = block.getFontSize();
+        }
+
+        // 新增：如果结束时仍在代码块中，关闭代码块
+        if (inCodeBlock) {
+            writer.write("\n```\n");
         }
 
         // 添加提取的表格
