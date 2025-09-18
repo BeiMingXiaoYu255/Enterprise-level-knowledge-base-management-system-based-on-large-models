@@ -21,9 +21,9 @@ public class ProfilePictureController {
         return ResponseEntity.ok("Profile picture saved successfully");
     }
 
-    @GetMapping("/url/{username}")
-    public ResponseEntity<String> getProfilePictureUrlByUsername(@PathVariable String username) {
-        String url = profilePictureService.getProfilePictureUrlByUsername(username);
+    @GetMapping("/url")
+    public ResponseEntity<String> getProfilePictureUrlByUsername(HttpServletRequest httpServletRequest) {
+        String url = profilePictureService.getProfilePictureUrlByUsername(httpServletRequest);
         return ResponseEntity.ok(url);
     }
 }
