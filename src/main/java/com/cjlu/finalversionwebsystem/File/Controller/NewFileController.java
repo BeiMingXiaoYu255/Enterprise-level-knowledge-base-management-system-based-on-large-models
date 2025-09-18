@@ -1,4 +1,4 @@
-/*package com.cjlu.finalversionwebsystem.File.Controller;
+package com.cjlu.finalversionwebsystem.File.Controller;
 
 import com.cjlu.finalversionwebsystem.File.service.FileStorageService;
 import com.cjlu.finalversionwebsystem.File.model.FileInfo;
@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class FileController {
+public class NewFileController {
 
     private final FileStorageService fileStorageService;
 
-    public FileController(FileStorageService fileStorageService) {
+    public NewFileController(FileStorageService fileStorageService) {
         this.fileStorageService = fileStorageService;
     }
 
@@ -78,5 +78,5 @@ public class FileController {
             return ResponseEntity.badRequest().build();
         }
     }
-}*/
+}
 
