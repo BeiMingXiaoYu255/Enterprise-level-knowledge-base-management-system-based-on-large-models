@@ -37,6 +37,10 @@ public class FileStorageService {
 
     // 存储文件
     public String storeFile(MultipartFile file) throws Exception {
+        return storeFileToLocation(file, uploadDir);
+    }
+
+    public String storeFileToLocation(MultipartFile file, String destinationDir) throws Exception {
         String originalFileName = file.getOriginalFilename();
         String fileExtension = "";
 
@@ -48,19 +52,19 @@ public class FileStorageService {
         String uniqueFileName = originalFileName;
         int counter = 1;
 
-        while (fileExists(uniqueFileName)) {
+        while (fileExists(destinationDir, uniqueFileName)) {
             uniqueFileName = baseFileName + "(" + counter + ")" + fileExtension;
             counter++;
         }
 
-        Path targetLocation = Paths.get(uploadDir).resolve(uniqueFileName);
+        Path targetLocation = Paths.get(destinationDir).resolve(uniqueFileName);
 
         // 保存文件
         file.transferTo(targetLocation);
 
         // 创建一个md格式的副本
         String markdownFileName = baseFileName + ".md";
-        Path markdownTargetLocation = Paths.get(uploadDir).resolve(markdownFileName);
+        Path markdownTargetLocation = Paths.get(destinationDir).resolve(markdownFileName);
 
         switch (fileExtension.toLowerCase()) {
             case ".pdf":
@@ -123,14 +127,23 @@ public class FileStorageService {
                 .collect(Collectors.toList());
     }
 
+
     // 获取文件路径
     public Path getFilePath(String fileName) {
-        return Paths.get(uploadDir).resolve(fileName).normalize();
+        return getFilePath(uploadDir, fileName);
+    }
+
+    public Path getFilePath(String destinationDir, String fileName) {
+        return Paths.get(destinationDir).resolve(fileName).normalize();
     }
 
     // 检查文件是否存在
     public boolean fileExists(String fileName) {
-        Path filePath = getFilePath(fileName);
+        return fileExists(uploadDir, fileName);
+    }
+
+    public boolean fileExists(String destinationDir, String fileName) {
+        Path filePath = Paths.get(destinationDir).resolve(fileName).normalize();
         return Files.exists(filePath) && Files.isRegularFile(filePath);
     }
 
