@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import com.cjlu.finalversionwebsystem.utils.CookieService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -91,6 +93,38 @@ public class NewKLBController {
         } catch (Exception e) {
             log.error("Error during KLB update: ", e);
             return Result.error("更新知识库信息失败" + e.getMessage());
+        }
+    }
+
+    @PostMapping("open")
+    public Result openKLB(@RequestBody Map<String, Object> request) {
+        try {
+            String KLBName = (String) request.get("KLBName");
+            if (KLBName == null || KLBName.isEmpty()) {
+                return Result.error("知识库名称不能为空");
+            }
+
+            File folder = new File("path/to/your/folder/" + KLBName);
+            if (!folder.exists() || !folder.isDirectory()) {
+                return Result.error("指定的知识库文件夹不存在");
+            }
+
+            File[] files = folder.listFiles();
+            if (files == null) {
+                return Result.success(new ArrayList<>());
+            }
+
+            List<String> filenames = new ArrayList<>();
+            for (File file : files) {
+                if (file.isFile()) {
+                    filenames.add(file.getName());
+                }
+            }
+
+            return Result.success(filenames);
+        } catch (Exception e) {
+            log.error("Error during opening KLB: ", e);
+            return Result.error("打开知识库失败: " + e.getMessage());
         }
     }
 
