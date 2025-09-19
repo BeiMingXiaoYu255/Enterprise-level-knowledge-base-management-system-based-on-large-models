@@ -27,8 +27,12 @@ public class ProfilePictureController {
     public ResponseEntity<Map<String, String>> getProfilePictureUrlByUsername(HttpServletRequest httpServletRequest) {
         String url = profilePictureService.getProfilePictureUrlByUsername(httpServletRequest);
         String username = profilePictureService.getUserNameByCookie(httpServletRequest);
+
+        // 修改URL为前端可以直接访问的路径
+        String frontendAccessibleUrl = "http://localhost:8080/" + url;
+
         Map<String, String> response = new HashMap<>();
-        response.put("url", url);
+        response.put("url", frontendAccessibleUrl);
         response.put("username", username);
         return ResponseEntity.ok(response);
     }
