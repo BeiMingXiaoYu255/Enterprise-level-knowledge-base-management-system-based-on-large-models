@@ -1,11 +1,7 @@
 package com.cjlu.finalversionwebsystem.service.impl;
 
 import com.cjlu.finalversionwebsystem.entity.ChatResponse;
-import com.cjlu.finalversionwebsystem.service.Interface.ChatServiceInterface;
-import com.cjlu.finalversionwebsystem.service.Interface.DocumentService;
-import com.cjlu.finalversionwebsystem.service.Interface.EnhancedChatService;
-import com.cjlu.finalversionwebsystem.service.Interface.FileService;
-import com.cjlu.finalversionwebsystem.service.Interface.FileReferenceDetectionService;
+import com.cjlu.finalversionwebsystem.service.Interface.*;
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
@@ -19,9 +15,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 增强的聊天服务实现类
@@ -569,5 +565,209 @@ public class EnhancedChatServiceImpl implements EnhancedChatService {
         }
 
         return references;
+    }
+
+    @Override
+    public Flux<ChatResponse> chatWithMultipleFileReferences(String message, List<String> fileNames) {
+        try {
+            log.info("开始基于多个文件的增强聊天 - 消息: {}, 文件数量: {}", message, fileNames.size());
+
+            // 验证文件名列表
+            if (fileNames == null || fileNames.isEmpty()) {
+                return Flux.just(new ChatResponse("错误：文件名列表不能为空", true));
+            }
+
+            // 验证所有文件是否存在
+            for (String fileName : fileNames) {
+                if (!fileService.fileExists(fileName)) {
+                    return Flux.just(new ChatResponse("错误：文件不存在 - " + fileName, true));
+                }
+            }
+
+            // 为多个文件创建检索器
+            ContentRetriever multiFileRetriever;
+            try {
+                multiFileRetriever = documentService.createRetrieverForMultipleFiles(fileNames);
+                log.info("成功为多个文件创建检索器");
+            } catch (Exception e) {
+                log.error("为多个文件创建检索器失败: {}", e.getMessage(), e);
+                return Flux.just(new ChatResponse("错误：无法处理指定的文件 - " + e.getMessage(), true));
+            }
+
+            // 创建基于多文件的RAG聊天服务
+            ChatServiceInterface ragChatService = null;
+            try {
+                ragChatService = AiServices.builder(ChatServiceInterface.class)
+                        .streamingChatLanguageModel(streamingChatModel)
+                        .contentRetriever(multiFileRetriever)
+                        .chatMemoryProvider(chatMemoryProvider)
+                        .build();
+                log.info("成功创建带多文件RAG功能的聊天服务");
+            } catch (Exception e) {
+                log.warn("无法创建带ContentRetriever的聊天服务，使用简化版本: {}", e.getMessage());
+            }
+
+            // 检查是否成功创建了RAG聊天服务
+            if (ragChatService != null) {
+                // 使用真正的流式RAG聊天服务
+                final ChatServiceInterface finalRagChatService = ragChatService;
+                final boolean[] hasReceivedTokens = {false};
+                final boolean[] isCompleted = {false};
+
+                return Flux.create(sink -> {
+                    try {
+                        final StringBuilder fullResponse = new StringBuilder();
+
+                        // 构建严格的提示词，防止AI幻觉，并要求按文件顺序回答
+                        StringBuilder fileOrderInfo = new StringBuilder();
+                        for (int i = 0; i < fileNames.size(); i++) {
+                            fileOrderInfo.append(String.format("文件%d：%s\n", i + 1, fileNames.get(i)));
+                        }
+
+                        // 先手动检索内容进行调试
+                        Query debugQuery = Query.from(message);
+                        List<Content> retrievedContents = multiFileRetriever.retrieve(debugQuery);
+
+                        log.info("🔍 检索调试信息:");
+                        log.info("📝 查询: {}", message);
+                        log.info("📊 检索到 {} 个内容段", retrievedContents.size());
+
+                        for (int i = 0; i < retrievedContents.size(); i++) {
+                            Content content = retrievedContents.get(i);
+                            String contentPreview = content.textSegment().text().length() > 100 ?
+                                content.textSegment().text().substring(0, 100) + "..." :
+                                content.textSegment().text();
+
+                            String sourceFile = "未知";
+                            if (content.textSegment().metadata() != null && content.textSegment().metadata().asMap() != null) {
+                                sourceFile = content.textSegment().metadata().asMap().getOrDefault("source_file", "未知").toString();
+                            }
+
+                            log.info("🔍 检索内容 {}: 来源=[{}], 预览=[{}]", i + 1, sourceFile, contentPreview);
+                        }
+
+                        // 按照用户指定的文件顺序重新组织内容映射
+                        StringBuilder fileContentMapping = new StringBuilder();
+
+                        // 为每个用户指定的文件查找对应的检索内容
+                        for (int i = 0; i < fileNames.size(); i++) {
+                            String targetFileName = fileNames.get(i);
+                            String fileContent = "未找到内容";
+
+                            // 在检索结果中查找对应文件的内容
+                            for (Content content : retrievedContents) {
+                                String sourceFile = "未知";
+                                if (content.textSegment().metadata() != null && content.textSegment().metadata().asMap() != null) {
+                                    sourceFile = content.textSegment().metadata().asMap().getOrDefault("source_file", "未知").toString();
+                                }
+
+                                if (targetFileName.equals(sourceFile)) {
+                                    fileContent = content.textSegment().text().length() > 200 ?
+                                        content.textSegment().text().substring(0, 200) + "..." :
+                                        content.textSegment().text();
+                                    break;
+                                }
+                            }
+
+                            fileContentMapping.append(String.format("文件%d（%s）的内容：%s\n",
+                                i + 1, targetFileName, fileContent));
+                        }
+
+                        String enhancedPrompt = String.format(
+                            "请严格按照以下指定的文件顺序回答问题，每个文件必须单独回答。\n\n" +
+                            "用户指定的文件顺序和内容：\n%s\n" +
+                            "回答要求：\n" +
+                            "1. 必须严格按照上述文件顺序（文件1、文件2...）组织回答\n" +
+                            "2. 每个文件单独一段，格式：**文件X（文件名）内容回答：**\n" +
+                            "3. 每个文件的回答必须基于该文件的实际内容\n" +
+                            "4. 如果某个文件内容很少，请如实说明\n" +
+                            "5. 绝对不要混淆不同文件的内容\n" +
+                            "6. 按顺序逐个回答，不要跳跃或重排\n\n" +
+                            "问题：%s",
+                            fileContentMapping.toString(), message
+                        );
+
+                        finalRagChatService.chat(enhancedPrompt)
+                            .onNext(token -> {
+                                hasReceivedTokens[0] = true;
+                                fullResponse.append(token);
+                                ChatResponse streamResponse = new ChatResponse(token, false);
+                                sink.next(streamResponse);
+                            })
+                            .onComplete(response -> {
+                                isCompleted[0] = true;
+                                try {
+                                    // 创建文件引用列表
+                                    List<ChatResponse.FileReference> references = new ArrayList<>();
+                                    for (String fileName : fileNames) {
+                                        String filePath = System.getProperty("user.dir") + File.separator + "files" + File.separator + fileName;
+                                        ChatResponse.FileReference ref = new ChatResponse.FileReference();
+                                        ref.setFileName(fileName);
+                                        ref.setFilePath(filePath);
+                                        ref.setRelevanceScore(1.0); // 多文件聊天中所有文件都是相关的
+                                        references.add(ref);
+                                    }
+
+                                    // 创建包含引用信息的最终响应（不在内容中添加文件引用文本，让Controller处理）
+                                    ChatResponse finalResponse = new ChatResponse("", references, true);
+                                    sink.next(finalResponse);
+                                    sink.complete();
+
+                                } catch (Exception e) {
+                                    log.error("添加多文件引用信息时出错: {}", e.getMessage(), e);
+                                    sink.error(e);
+                                }
+                            })
+                            .onError(error -> {
+                                log.error("多文件RAG聊天过程中出错: {}", error.getMessage(), error);
+                                if (!isCompleted[0]) {
+                                    isCompleted[0] = true;
+                                    if (hasReceivedTokens[0]) {
+                                        // 如果已经接收到token，说明AI响应成功，只是内部处理有问题
+                                        // 仍然添加文件引用信息
+                                        try {
+                                            // 创建文件引用列表
+                                            List<ChatResponse.FileReference> references = new ArrayList<>();
+                                            for (String fileName : fileNames) {
+                                                String filePath = System.getProperty("user.dir") + File.separator + "files" + File.separator + fileName;
+                                                ChatResponse.FileReference ref = new ChatResponse.FileReference();
+                                                ref.setFileName(fileName);
+                                                ref.setFilePath(filePath);
+                                                ref.setRelevanceScore(1.0);
+                                                references.add(ref);
+                                            }
+
+                                            // 创建包含引用信息的最终响应（不在内容中添加文件引用文本，让Controller处理）
+                                            ChatResponse finalResponse = new ChatResponse("", references, true);
+                                            sink.next(finalResponse);
+                                        } catch (Exception e) {
+                                            log.error("在错误处理中添加文件引用信息失败: {}", e.getMessage(), e);
+                                        }
+                                    } else {
+                                        ChatResponse errorResponse = new ChatResponse("抱歉，处理您的请求时出现了错误: " + error.getMessage(), true);
+                                        sink.next(errorResponse);
+                                    }
+                                }
+                                sink.complete();
+                            })
+                            .start();
+
+                    } catch (Exception e) {
+                        log.error("启动多文件RAG聊天时出错: {}", e.getMessage(), e);
+                        ChatResponse errorResponse = new ChatResponse("抱歉，启动聊天时出现了错误: " + e.getMessage(), true);
+                        sink.next(errorResponse);
+                        sink.complete();
+                    }
+                });
+
+            } else {
+                // 如果无法创建RAG服务，返回错误信息
+                return Flux.just(new ChatResponse("错误：无法创建多文件聊天服务", true));
+            }
+
+        } catch (Exception e) {
+            log.error("基于多文件的聊天失败: {}", e.getMessage(), e);
+            return Flux.just(new ChatResponse("抱歉，处理您的请求时出现了错误: " + e.getMessage(), true));
+        }
     }
 }
