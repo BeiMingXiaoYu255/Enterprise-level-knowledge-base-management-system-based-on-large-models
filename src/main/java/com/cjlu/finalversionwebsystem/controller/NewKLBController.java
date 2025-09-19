@@ -133,4 +133,9 @@ public class NewKLBController {
         return Result.success(klbservice.getTopFiveKLBByAccessCount());
     }
 
+    @PostMapping("get_KLB_by_classification")
+    public Result getKLBByPrimaryClassification(@RequestBody Map<String,Object> request){
+        return Result.success(klbservice.getTopTenKLBByPrimaryClassification((String) request.get("primary_classification")));
+    }
+
 }

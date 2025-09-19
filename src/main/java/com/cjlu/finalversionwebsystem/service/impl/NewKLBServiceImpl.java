@@ -89,6 +89,7 @@ public class NewKLBServiceImpl implements NewKLBInterface {
         return klbMapper.selectTopFiveByAccessCount();
     }
 
+    @Override
     public List<Map<String,Object>> getTopTenKLBByPrimaryClassification(String primary_classification){
         return klbMapper.selectKLBByPrimaryClassification(primary_classification);
     }
