@@ -63,4 +63,6 @@ public interface NewKLBMapper {
     @Select("SELECT * FROM klb WHERE secondaryClassification = #{secondaryClassification}")
     List<Map<String, Object>> selectAllKLBBySecondaryClassification(@Param("secondaryClassification") String secondaryClassification);
 
+    @Select("SELECT * FROM klb WHERE KLBName = #{klbName}")
+    Map<String, Object> selectKLBByName(@Param("klbName") String klbName);
 }

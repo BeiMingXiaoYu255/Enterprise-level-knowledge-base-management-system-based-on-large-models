@@ -4,8 +4,10 @@ package com.cjlu.finalversionwebsystem.File.service;
 import com.cjlu.finalversionwebsystem.File.model.FileInfo;
 import com.cjlu.finalversionwebsystem.File.util.*;
 import com.cjlu.finalversionwebsystem.entity.Result;
+import com.cjlu.finalversionwebsystem.mapper.NewKLBMapper;
 import com.rometools.utils.IO;
 import net.sourceforge.tess4j.TesseractException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +25,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class FileStorageService {
+
+    @Autowired
+    NewKLBMapper klbMapper;
 
 
     private static String uploadDir = "D:\\基于大模型的企业级知识管理系统\\知识库";

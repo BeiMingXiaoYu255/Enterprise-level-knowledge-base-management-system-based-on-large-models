@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -59,5 +61,26 @@ public class NewKLBServiceImpl implements NewKLBInterface {
     @Override
     public void updateKLBByKLBName(String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus) {
         klbMapper.updateKLBByKLBName(KLBName, KLBCreator, primaryClassification, secondaryClassification, KLBReviseTime, supportedDataFormats, KLBSearchStrategy, description, creatTime, KLBStatus);
+    }
+
+
+    public List<String> getFilesByKLBName(String KLBName) {
+        Map<String, Object> klb = klbMapper.selectKLBByName(KLBName);
+        if (klb == null || !klb.containsKey("location")) {
+            throw new RuntimeException("KLB with name " + KLBName + " does not exist or location is not found");
+        }
+        String location = (String) klb.get("location");
+        File directory = new File(location);
+        if (!directory.exists() || !directory.isDirectory()) {
+            throw new RuntimeException("Directory for KLB with name " + KLBName + " does not exist");
+        }
+        File[] files = directory.listFiles();
+        List<String> fileNames = new ArrayList<>();
+        if (files != null) {
+            for (File file : files) {
+                fileNames.add(file.getName());
+            }
+        }
+        return fileNames;
     }
 }
