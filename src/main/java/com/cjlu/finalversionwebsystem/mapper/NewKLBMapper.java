@@ -69,5 +69,6 @@ public interface NewKLBMapper {
     @Select("SELECT * FROM klb ORDER BY accessCount DESC LIMIT 5")
     List<Map<String, Object>> selectTopFiveByAccessCount();
 
-
+    @Select("SELECT * FROM klb WHERE primaryClassification = #{primaryClassification} ORDER BY accessCount DESC LIMIT 10")
+    Map<String, Object> selectTopOneByPrimaryClassificationAndAccessCount(@Param("primaryClassification") String primaryClassification);
 }
