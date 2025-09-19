@@ -84,4 +84,6 @@ public interface NewKLBInterface {
      * @param KLBStatus               状态
      */
     void updateKLBByKLBName(String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus);
+
+    List<Map<String, Object>> getTopFiveKLBByAccessCount();
 }

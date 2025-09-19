@@ -83,4 +83,10 @@ public class NewKLBServiceImpl implements NewKLBInterface {
         }
         return fileNames;
     }
+
+    @Override
+    public List<Map<String, Object>> getTopFiveKLBByAccessCount() {
+        return klbMapper.selectTopFiveByAccessCount();
+    }
+
 }
