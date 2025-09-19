@@ -4,6 +4,7 @@ package com.cjlu.finalversionwebsystem.controller;
 import com.cjlu.finalversionwebsystem.entity.ChatResponse;
 import com.cjlu.finalversionwebsystem.entity.FileSearchResult;
 import com.cjlu.finalversionwebsystem.entity.Result;
+import com.cjlu.finalversionwebsystem.mapper.NewKLBMapper;
 import com.cjlu.finalversionwebsystem.service.Interface.ChatServiceInterface;
 import com.cjlu.finalversionwebsystem.service.Interface.DocumentService;
 import com.cjlu.finalversionwebsystem.service.Interface.EnhancedChatService;
@@ -11,6 +12,7 @@ import com.cjlu.finalversionwebsystem.service.Interface.FileService;
 import com.cjlu.finalversionwebsystem.service.Interface.FileReferenceDetectionService;
 import com.cjlu.finalversionwebsystem.service.Interface.ModelManagementService;
 import com.cjlu.finalversionwebsystem.service.impl.ChatServiceImpl;
+import com.cjlu.finalversionwebsystem.service.impl.NewKLBServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +49,9 @@ public class ChatController {
 
     @Autowired
     private ModelManagementService modelManagementService;
+
+    @Autowired
+    private NewKLBServiceImpl newKLBService;
 
     /**
      * 普通聊天接口（使用动态切换的模型配置，包含文件引用）

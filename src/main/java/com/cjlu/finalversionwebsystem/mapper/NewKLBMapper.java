@@ -65,4 +65,9 @@ public interface NewKLBMapper {
 
     @Select("SELECT * FROM klb WHERE KLBName = #{klbName}")
     Map<String, Object> selectKLBByName(@Param("klbName") String klbName);
+
+    @Select("SELECT * FROM klb ORDER BY accessCount DESC LIMIT 5")
+    List<Map<String, Object>> selectTopFiveByAccessCount();
+
+
 }
