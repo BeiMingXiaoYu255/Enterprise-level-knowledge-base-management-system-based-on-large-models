@@ -128,4 +128,9 @@ public class NewKLBController {
         }
     }
 
+    @PostMapping("access")
+    public Result getKLBByAccessCount(){
+        return Result.success(klbservice.getTopFiveKLBByAccessCount());
+    }
+
 }
