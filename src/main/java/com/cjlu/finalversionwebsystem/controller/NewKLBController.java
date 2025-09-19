@@ -138,4 +138,9 @@ public class NewKLBController {
         return Result.success(klbservice.getTopTenKLBByPrimaryClassification((String) request.get("primary_classification")));
     }
 
+    @PostMapping("search_by_keywords")
+    public Result getKLBByKeyWords(@RequestBody Map<String,Object> request){
+        return Result.success(klbservice.getKLBByKeyWords((String) request.get("keywords")));
+    }
+
 }

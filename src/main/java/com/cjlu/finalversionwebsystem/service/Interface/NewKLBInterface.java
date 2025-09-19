@@ -88,4 +88,6 @@ public interface NewKLBInterface {
     List<Map<String, Object>> getTopFiveKLBByAccessCount();
 
     List<Map<String,Object>> getTopTenKLBByPrimaryClassification(String primary_classification);
+
+    List<Map<String,Object>> getKLBByKeyWords(String keywords);
 }

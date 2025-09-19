@@ -94,4 +94,9 @@ public class NewKLBServiceImpl implements NewKLBInterface {
         return klbMapper.selectKLBByPrimaryClassification(primary_classification);
     }
 
+    @Override
+    public List<Map<String,Object>> getKLBByKeyWords(String keywords){
+        return klbMapper.selectKLBByKeywordInKLBName(keywords);
+    }
+
 }

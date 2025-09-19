@@ -66,9 +66,14 @@ public interface NewKLBMapper {
     @Select("SELECT * FROM klb WHERE KLBName = #{klbName}")
     Map<String, Object> selectKLBByName(@Param("klbName") String klbName);
 
+    @Select("SELECT * FROM klb WHERE KLBName LIKE CONCAT('%', #{keyword}, '%')")
+    List<Map<String, Object>> selectKLBByKeywordInKLBName(@Param("keyword") String keyword);
+
     @Select("SELECT * FROM klb ORDER BY accessCount DESC LIMIT 5")
     List<Map<String, Object>> selectTopFiveByAccessCount();
 
     @Select("SELECT * FROM klb WHERE primaryClassification = #{primaryClassification} ORDER BY accessCount DESC LIMIT 10")
     Map<String, Object> selectTopOneByPrimaryClassificationAndAccessCount(@Param("primaryClassification") String primaryClassification);
+    
+    
 }
