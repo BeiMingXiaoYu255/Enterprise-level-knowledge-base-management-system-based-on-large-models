@@ -104,7 +104,7 @@ public class NewKLBController {
                 return Result.error("知识库名称不能为空");
             }
 
-            File folder = new File("path/to/your/folder/" + KLBName);
+            File folder = new File("D:\\基于大模型的企业级知识管理系统\\知识库\\" + KLBName);
             if (!folder.exists() || !folder.isDirectory()) {
                 return Result.error("指定的知识库文件夹不存在");
             }

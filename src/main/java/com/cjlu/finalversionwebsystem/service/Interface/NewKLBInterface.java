@@ -85,6 +85,8 @@ public interface NewKLBInterface {
      */
     void updateKLBByKLBName(String KLBName, String KLBCreator, String primaryClassification, String secondaryClassification, String KLBReviseTime, String supportedDataFormats, String KLBSearchStrategy, String description, String creatTime, String KLBStatus);
 
+    List<String> getFilesByKLBName(String KLBName);
+
     List<Map<String, Object>> getTopFiveKLBByAccessCount();
 
     List<Map<String,Object>> getTopTenKLBByPrimaryClassification(String primary_classification);

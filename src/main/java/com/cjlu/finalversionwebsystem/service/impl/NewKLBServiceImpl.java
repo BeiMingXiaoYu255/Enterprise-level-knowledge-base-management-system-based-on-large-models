@@ -63,7 +63,7 @@ public class NewKLBServiceImpl implements NewKLBInterface {
         klbMapper.updateKLBByKLBName(KLBName, KLBCreator, primaryClassification, secondaryClassification, KLBReviseTime, supportedDataFormats, KLBSearchStrategy, description, creatTime, KLBStatus);
     }
 
-
+    @Override
     public List<String> getFilesByKLBName(String KLBName) {
         Map<String, Object> klb = klbMapper.selectKLBByName(KLBName);
         if (klb == null || !klb.containsKey("location")) {
