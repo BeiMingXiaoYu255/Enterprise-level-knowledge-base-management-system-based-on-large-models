@@ -88,7 +88,8 @@ public class NewFileController {
     @PostMapping("/access")
     public ResponseEntity<String> accessFileContent(@RequestParam("filePath") String filePath) {
         try {
-            Path path = Paths.get(filePath);
+            String baseDir = "D:\\基于大模型的企业级知识管理系统\\知识库\\";
+            Path path = Paths.get(baseDir, filePath);
             if (!Files.exists(path)) {
                 return ResponseEntity.notFound().build();
             }
