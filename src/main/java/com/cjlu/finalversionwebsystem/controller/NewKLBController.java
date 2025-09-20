@@ -1,14 +1,21 @@
 package com.cjlu.finalversionwebsystem.controller;
 
+import com.cjlu.finalversionwebsystem.File.service.FileStorageService;
 import com.cjlu.finalversionwebsystem.entity.Result;
 import com.cjlu.finalversionwebsystem.service.Interface.NewKLBInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.cjlu.finalversionwebsystem.utils.CookieService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +27,9 @@ import java.util.Map;
 public class NewKLBController {
     @Autowired
      private NewKLBInterface klbservice;
+
+    @Autowired
+    private FileStorageService fileStorageService;
     
     @PostMapping("creat")
     public Result createKLB(@RequestBody Map<String, Object> request) {
@@ -142,5 +152,6 @@ public class NewKLBController {
     public Result getKLBByKeyWords(@RequestBody Map<String,Object> request){
         return Result.success(klbservice.getKLBByKeyWords((String) request.get("keywords")));
     }
-
+    
+    
 }

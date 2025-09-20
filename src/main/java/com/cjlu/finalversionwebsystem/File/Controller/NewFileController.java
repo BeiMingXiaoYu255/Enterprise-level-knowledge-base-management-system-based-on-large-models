@@ -12,7 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -81,5 +83,23 @@ public class NewFileController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    // 访问文件内容
+    @PostMapping("/access")
+    public ResponseEntity<String> accessFileContent(@RequestParam("filePath") String filePath) {
+        try {
+            Path path = Paths.get(filePath);
+            if (!Files.exists(path)) {
+                return ResponseEntity.notFound().build();
+            }
+            String content = new String(Files.readAllBytes(path));
+            return ResponseEntity.ok(content);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("读取文件失败: " + e.getMessage());
+        }
+    }
+    
+    
 }
 
