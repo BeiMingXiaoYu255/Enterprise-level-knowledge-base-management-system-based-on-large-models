@@ -97,9 +97,9 @@ public class NewKLBController {
     }
 
     @PostMapping("open")
-    public Result openKLB(@RequestBody Map<String, Object> request) {
+    public Result openKLB(@RequestBody Map<String, String> request) {
         try {
-            String KLBName = (String) request.get("KLBName");
+            String KLBName = request.get("KLBName");
             if (KLBName == null || KLBName.isEmpty()) {
                 return Result.error("知识库名称不能为空");
             }
