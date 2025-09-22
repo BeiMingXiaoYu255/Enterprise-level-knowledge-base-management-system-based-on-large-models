@@ -1,0 +1,526 @@
+/* 自定义工具类和动画 */
+@layer utilities {
+    .content-auto {
+        content-visibility: auto;
+    }
+
+    .nav-link-hover {
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .nav-link-hover::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        height: 2px;
+        width: 0;
+        background-color: #00488b;
+        transition: all 300ms ease;
+        transform: translateX(-50%);
+    }
+
+    .nav-link-hover:hover::after {
+        width: 100%;
+    }
+
+    .banner-btn-hover {
+        transition: all 300ms ease;
+    }
+
+    .banner-btn-hover:hover {
+        box-shadow: 0 10px 25px -3px rgba(0, 72, 139, 0.3), 0 4px 6px -2px rgba(0, 72, 139, 0.1);
+        transform: translateY(-3px);
+    }
+
+    .product-card-hover {
+        transition: all 300ms ease;
+    }
+
+    .product-card-hover:hover {
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        transform: translateY(-5px);
+    }
+
+    .nav-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        width: 100vw;
+        display: none;
+        background-color: white;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        border-radius: 0 0 12px 12px;
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 100;
+        border-top: 1px solid #eaeaea;
+    }
+
+    .group:hover .nav-dropdown {
+        visibility: visible;
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 动画定义 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { 
+        transform: translateY(30px); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateY(0); 
+        opacity: 1; 
+    }
+}
+
+@keyframes scaleIn {
+    from { 
+        transform: scale(0.95); 
+        opacity: 0; 
+    }
+    to { 
+        transform: scale(1); 
+        opacity: 1; 
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+.slide-up {
+    animation: slideUp 0.6s ease-out;
+}
+
+.scale-in {
+    animation: scaleIn 0.5s ease-out;
+}
+
+/* 基础样式补充 */
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* 科技感背景样式 */
+.tech-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(214, 232, 255, 0.2) 0%, rgba(240, 247, 255, 0.1) 100%);
+}
+
+.tech-line {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 51, 102, 0.2), transparent);
+    transform-origin: left;
+    animation: lineFlow 15s infinite linear;
+}
+
+.tech-dot {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(0, 51, 102, 0.15);
+    border-radius: 50%;
+    animation: dotFade 8s infinite ease-in-out;
+}
+
+@keyframes lineFlow {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes dotFade {
+    0%,
+    100% {
+        opacity: 0.2;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.5);
+    }
+}
+
+/* 恒生电子Logo样式 */
+.logo-icon {
+    background: linear-gradient(135deg, #addfee 0%, #5ac8fa 100%);
+    color: #00488b;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 18px;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.logo-icon::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
+    transform: rotate(30deg);
+    animation: shine 3s infinite ease-in-out;
+}
+
+@keyframes shine {
+    0% {
+        transform: translateX(-100%) rotate(30deg);
+    }
+    100% {
+        transform: translateX(100%) rotate(30deg);
+    }
+}
+
+/* 顶部通知栏自定义样式 */
+.top-notification-bar {
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 72, 139, 0.15);
+}
+
+/* 背景图案 */
+.notification-bg-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.1;
+    background-image: 
+    radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.8) 0%, transparent 20%),
+    radial-gradient(circle at 90% 70%, rgba(255, 255, 255, 0.6) 0%, transparent 20%);
+    z-index: 1;
+}
+
+/* 文字效果 */
+.notification-text {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    letter-spacing: 0.02em;
+}
+
+/* 链接悬停效果 */
+.notification-link {
+    position: relative;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.notification-link::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.3s ease;
+}
+
+.notification-link:hover::before {
+    width: 100%;
+}
+
+/* 进度条动画 */
+.notification-progress {
+    width: 100%;
+    animation: progressBar 8s linear infinite;
+    box-shadow: 0 0 8px rgba(90, 200, 250, 0.5);
+}
+
+@keyframes progressBar {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+
+/* 导航容器 */
+.nav-container {
+    display: flex;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
+/* 下拉菜单样式 */
+.dropdown-layout {
+    display: flex;
+    justify-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2px 0;
+}
+
+.dropdown-left {
+    flex: 3;
+    display: flex;
+    gap: 30px;
+    padding-right: 20px;
+}
+
+.dropdown-section {
+    flex: 1;
+    min-width: 200px;
+    padding: 0;
+}
+
+.dropdown-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #2c3e50;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #eaeaea;
+    position: relative;
+}
+
+.dropdown-title::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background: #00488b;
+    transition: width 0.3s ease;
+}
+
+.dropdown-section:hover .dropdown-title::after {
+    width: 100%;
+}
+
+.dropdown-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-section li {
+    margin-bottom: 8px;
+    height: auto;
+}
+
+.dropdown-section a {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    text-decoration: none;
+    color: #5f6368;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    background: #f8f9fa;
+    position: relative;
+    overflow: hidden;
+}
+
+.dropdown-section a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: #00488b;
+    transform: scaleY(0);
+    transition: transform 0.2s ease;
+}
+  
+.dropdown-section a:hover {
+    background-color: #f0f7ff;
+    color: #00488b;
+    transform: translateX(5px);
+    box-shadow: 0 4px 8px rgba(0, 72, 139, 0.1);
+}
+  
+.dropdown-section a:hover::before {
+    transform: scaleY(1);
+}
+  
+.dropdown-section a i {
+    margin-right: 10px;
+    width: 18px;
+    text-align: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+  
+.dropdown-section a:hover i {
+    transform: scale(1.2);
+}
+
+.dropdown-explore {
+    width: 240px;
+    padding: 20px;
+    border-left: 1px solid rgba(0, 0, 0, 0.05);flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 25px;
+    border-left: 1px solid #e0e7ff;
+    background: linear-gradient(to bottom, #f8fbff, #ffffff);
+    height: 100%;
+    min-width: 280px;
+    border-radius: 0 0 12px 0;
+}
+
+.explore-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #2c3e50;
+}
+
+.explore-subtitle {
+    font-size: 13px;
+    color: #5f6368;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.explore-link {
+    color: #00488b;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 25px;
+    transition: all 0.2s ease;
+    padding: 8px 16px;
+    border-radius: 6px;
+    background: #e6f2ff;
+    position: relative;
+    overflow: hidden;
+}
+
+.explore-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    transition: left 0.5s ease;
+}
+
+.explore-link:hover {
+    color: #00264d;
+    gap: 12px;
+    background: #d4e7ff;
+}
+
+.explore-link:hover::before {
+    left: 100%;
+}
+
+.explore-image-container {
+    width: 100%;
+    height: 140px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: auto;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.explore-image-container:hover {
+    transform: translateY(-5px);
+}
+
+.explore-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.explore-image-container:hover .explore-image {
+    transform: scale(1.05);
+}
+
+/* Canvas styles */
+#techLinesCanvas {
+    background: transparent !important;
+    display: block;
+    width: 100%;
+    height: 400px;
+    position: relative;
+    z-index: 1;
+}
+
+/* 响应式调整 */
+@media (max-width: 1024px) {
+    .dropdown-layout {
+      flex-direction: column;
+    }
+    
+    .dropdown-explore {
+      border-left: none;
+      border-top: 1px solid #e0e7ff;
+      padding-top: 25px;
+      margin-top: 15px;
+    }
+    
+    .dropdown-left {
+      flex-direction: column;
+      gap: 20px;
+      padding-right: 0;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .carousel-track {
+        flex-wrap: nowrap;
+    }
+
+    .nav-dropdown {
+        position: static;
+        display: none;
+        opacity: 1;
+        visibility: visible;
+        box-shadow: none;
+        padding-left: 1rem;
+    }
+
+    .group:hover .nav-dropdown {
+        display: block;
+    }
+
+    #techLinesCanvas {
+        height: 300px;
+    }
+}

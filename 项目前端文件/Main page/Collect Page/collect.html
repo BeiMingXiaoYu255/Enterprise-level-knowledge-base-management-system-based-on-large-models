@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./black.ico" type="image/x-icon">
+    <title>我的收藏</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="./collect.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <div class="collection-container" id="collectionApp">
+        <!-- 顶部装饰条 -->
+        <div class="top-decoration"></div>
+
+        <div class="search-header">
+            <h2>我的收藏</h2>
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="搜索收藏的知识库..." v-model="collectionSearchQuery"
+                    @keydown.enter="searchCollections" @input="handleSearchInput">
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-header">
+                <div class="filter-title">筛选</div>
+                <div class="filter-actions">
+                    <button class="filter-btn" :class="{active: activeCollectionFilter === 'all'}" title="全部收藏"
+                        @click="switchCollectionFilter('all')">全部</button>
+                    <button class="filter-btn" :class="{active: activeCollectionFilter === 'category'}" title="按分类筛选"
+                        @click="switchCollectionFilter('category')">分类</button>
+                    <button class="filter-btn" :class="{active: activeCollectionFilter === 'recent'}" title="按日期筛选"
+                        @click="switchCollectionFilter('recent')">最近添加</button>
+                </div>
+            </div>
+
+            <!-- 分类筛选下拉框 -->
+            <div v-if="activeCollectionFilter === 'category'" class="category-filter">
+                <select v-model="activeCategory" @change="filterByCategory">
+                    <option value="">所有分类</option>
+                    <option v-for="category in uniqueCategories" :value="category" :key="category">
+                        {{ category }}
+                    </option>
+                </select>
+            </div>
+
+            <!-- 最近添加时间筛选 -->
+            <div v-if="activeCollectionFilter === 'recent'" class="recent-filter">
+                <select v-model="recentDays" @change="filterByRecent">
+                    <option value="7">最近7天</option>
+                    <option value="30">最近30天</option>
+                    <option value="90">最近3个月</option>
+                    <option value="180">最近半年</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <span class="filter-label">排序:</span>
+                <div class="filter-options">
+                    <button class="filter-btn" :class="{active: activeSortType === 'default'}" title="默认排序"
+                        @click="sortCollections('default')">默认</button>
+                    <button class="filter-btn" :class="{active: activeSortType === 'name'}" title="按名称排序"
+                        @click="sortCollections('name')">名称</button>
+                    <button class="filter-btn" :class="{active: activeSortType === 'time'}" title="按收藏时间排序"
+                        @click="sortCollections('time')">收藏时间</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 加载状态 -->
+        <div class="loading-state" v-if="loading">
+            <div class="spinner"></div>
+            <p>加载中...</p>
+        </div>
+
+        <!-- 收藏为空状态 -->
+        <div class="blank-content" v-else-if="filteredCollections.length === 0 && !collectionSearchQuery">
+            <div class="empty-collection">
+                <i class="fas fa-star-o empty-icon"></i>
+                <h3>暂无收藏内容</h3>
+                <p>您可以在浏览知识库时点击收藏按钮，将常用内容保存到这里</p>
+                <button class="browse-btn" @click="switchModule('visit-select')">
+                    <i class="fas fa-compass"></i> 浏览知识库
+                </button>
+            </div>
+        </div>
+
+        <!-- 搜索无结果状态 -->
+        <div class="blank-content" v-else-if="collectionSearchQuery && filteredCollections.length === 0">
+            <div class="empty-collection">
+                <i class="fas fa-search empty-icon"></i>
+                <h3>未找到相关收藏</h3>
+                <p>尝试使用其他关键词搜索</p>
+                <button class="browse-btn" @click="clearSearch">
+                    <i class="fas fa-times"></i> 清除搜索
+                </button>
+            </div>
+        </div>
+
+        <!-- 收藏列表 -->
+        <div class="frequently-grid" v-else>
+            <div class="knowledge-item" v-for="kb in paginatedData" :key="kb.id">
+                <div class="knowledge-badge" v-if="isRecent(kb.collectTime)">
+                    <i class="fas fa-clock"></i> 新收藏
+                </div>
+                <div class="knowledge-header">
+                    <h4 class="knowledge-title">{{ kb.name }}</h4>
+                    <div class="knowledge-actions">
+                        <button title="取消收藏" @click="removeFromCollection(kb.id)">
+                            <i class="fas fa-star"></i>
+                        </button>
+                    </div>
+                </div>
+                <p class="knowledge-desc">{{ kb.description || '无描述信息' }}</p>
+                <div class="knowledge-meta">
+                    <span class="meta-category">{{ kb.category }}</span>
+                    <span class="meta-date">收藏于 {{ formatDate(kb.collectTime) }}</span>
+                </div>
+                <div class="knowledge-footer">
+                    <span class="access-count"><i class="fas fa-eye"></i> {{ kb.viewCount }} 次查看</span>
+                    <button class="view-btn" @click="viewKnowledge(kb.id)">查看详情</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分页控件 -->
+        <div class="pagination" v-if="filteredCollections.length > 0 && totalPages > 1">
+            <button class="page-btn" @click="changePage(currentPage - 1)" :disabled="currentPage === 1">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="page-btn" v-for="page in pageNumbers" :key="page" :class="{active: currentPage === page}"
+                @click="changePage(page)">
+                {{ page }}
+            </button>
+            <button class="page-btn" @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- 底部信息区 -->
+        <div class="footer-info" v-if="filteredCollections.length > 0">
+            <div class="collection-stats">
+                <span><i class="fas fa-bookmark"></i> 共 {{ collectedKnowledge.length }} 条收藏</span>
+                <span><i class="fas fa-folder"></i> 共 {{ uniqueCategories.length }} 个分类</span>
+            </div>
+            <div class="footer-links">
+                <a href="#" @click.prevent="exportCollections"><i class="fas fa-download"></i> 导出收藏</a>
+                <a href="#" @click.prevent="clearAllCollections"><i class="fas fa-trash"></i> 清空收藏</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#collectionApp',
+            data() {
+                return {
+                    // 我的收藏相关属性
+                    collectionSearchQuery: '',       // 收藏搜索框的绑定值
+                    collectedKnowledge: [],          // 收藏的知识库列表
+                    filteredCollections: [],         // 筛选后的收藏列表
+                    activeCollectionFilter: 'all',   // 当前激活的收藏筛选条件
+                    activeSortType: 'default',       // 当前激活的排序方式
+                    activeCategory: '',              // 当前选中的分类
+                    recentDays: 7,                   // 最近天数筛选
+                    loading: false,                  // 加载状态
+                    currentModule: 'visit-collect',  // 当前模块
+                    selectedKnowledgeId: null,       // 选中的知识库ID
+                    currentPage: 1,                  // 当前页码
+                    pageSize: 12,                    // 每页显示数量
+                    totalPages: 1                    // 总页数
+                }
+            },
+            computed: {
+                // 获取所有唯一分类
+                uniqueCategories() {
+                    const categories = new Set();
+                    this.collectedKnowledge.forEach(kb => {
+                        if (kb.category) categories.add(kb.category);
+                    });
+                    return Array.from(categories);
+                },
+                // 分页显示的页码
+                pageNumbers() {
+                    const pages = [];
+                    // 只显示当前页附近的页码
+                    const startPage = Math.max(1, this.currentPage - 2);
+                    const endPage = Math.min(this.totalPages, startPage + 4);
+
+                    // 添加第一页
+                    if (startPage > 1) {
+                        pages.push(1);
+                        if (startPage > 2) pages.push('...');
+                    }
+
+                    // 添加中间页码
+                    for (let i = startPage; i <= endPage; i++) {
+                        pages.push(i);
+                    }
+
+                    // 添加最后一页
+                    if (endPage < this.totalPages) {
+                        if (endPage < this.totalPages - 1) pages.push('...');
+                        pages.push(this.totalPages);
+                    }
+
+                    return pages;
+                },
+                // 分页后的数据
+                paginatedData() {
+                    const startIndex = (this.currentPage - 1) * this.pageSize;
+                    return this.filteredCollections.slice(startIndex, startIndex + this.pageSize);
+                }
+            },
+            methods: {
+                // 判断是否为最近7天内收藏的
+                isRecent(collectTime) {
+                    const recentDate = new Date();
+                    recentDate.setDate(recentDate.getDate() - 7);
+                    return new Date(collectTime) >= recentDate;
+                },
+
+                // 1. 搜索收藏的知识库
+                searchCollections() {
+                    const keyword = this.collectionSearchQuery.trim().toLowerCase();
+                    if (!keyword) {
+                        this.filteredCollections = [...this.collectedKnowledge];
+                    } else {
+                        this.filteredCollections = this.collectedKnowledge.filter(kb =>
+                            kb.name.toLowerCase().includes(keyword) ||
+                            (kb.description && kb.description.toLowerCase().includes(keyword)) ||
+                            (kb.category && kb.category.toLowerCase().includes(keyword))
+                        );
+                    }
+                    this.updatePagination();
+                },
+
+                // 实时搜索处理
+                handleSearchInput() {
+                    // 延迟搜索，避免输入时频繁触发
+                    clearTimeout(this.searchTimer);
+                    this.searchTimer = setTimeout(() => {
+                        this.searchCollections();
+                    }, 300);
+                },
+
+                // 清除搜索
+                clearSearch() {
+                    this.collectionSearchQuery = '';
+                    this.searchCollections();
+                },
+
+                // 2. 从收藏中移除知识库
+                removeFromCollection(id) {
+                    if (!confirm('确定要取消收藏该知识库吗？')) return;
+
+                    this.loading = true;
+                    axios.post('/api/collections/remove', { knowledgeId: id })
+                        .then(response => {
+                            if (response.data.code === 1) {
+                                this.collectedKnowledge = this.collectedKnowledge.filter(kb => kb.id !== id);
+                                this.searchCollections();
+                                this.showToast('取消收藏成功');
+                            } else {
+                                this.showToast('取消收藏失败：' + response.data.msg, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('取消收藏失败', error);
+                            this.showToast('网络错误，取消收藏失败', 'error');
+                        })
+                        .finally(() => {
+                            this.loading = false;
+                        });
+                },
+
+                // 3. 切换收藏筛选条件（全部/分类/最近添加）
+                switchCollectionFilter(type) {
+                    this.activeCollectionFilter = type;
+                    this.currentPage = 1; // 重置页码
+
+                    switch (type) {
+                        case 'all':
+                            this.filteredCollections = [...this.collectedKnowledge];
+                            break;
+                        case 'category':
+                            this.filterByCategory();
+                            break;
+                        case 'recent':
+                            this.filterByRecent();
+                            break;
+                    }
+
+                    this.updatePagination();
+                },
+
+                // 按分类筛选
+                filterByCategory() {
+                    if (!this.activeCategory) {
+                        this.filteredCollections = [...this.collectedKnowledge];
+                    } else {
+                        this.filteredCollections = this.collectedKnowledge.filter(
+                            kb => kb.category === this.activeCategory
+                        );
+                    }
+                    this.updatePagination();
+                },
+
+                // 按最近添加筛选
+                filterByRecent() {
+                    const today = new Date();
+                    const recentDate = new Date();
+                    recentDate.setDate(today.getDate() - this.recentDays);
+
+                    this.filteredCollections = this.collectedKnowledge.filter(kb => {
+                        const collectDate = new Date(kb.collectTime);
+                        return collectDate >= recentDate;
+                    });
+                    this.updatePagination();
+                },
+
+                // 4. 切换收藏排序方式（默认/名称/收藏时间）
+                sortCollections(sortType) {
+                    this.activeSortType = sortType;
+                    const sorted = [...this.filteredCollections];
+
+                    switch (sortType) {
+                        case 'default':
+                            sorted.sort((a, b) => this.collectedKnowledge.indexOf(a) - this.collectedKnowledge.indexOf(b));
+                            break;
+                        case 'name':
+                            sorted.sort((a, b) => a.name.localeCompare(b.name));
+                            break;
+                        case 'time':
+                            sorted.sort((a, b) => new Date(b.collectTime) - new Date(a.collectTime));
+                            break;
+                    }
+
+                    this.filteredCollections = sorted;
+                },
+
+                // 5. 查看收藏的知识库详情
+                viewKnowledge(id) {
+                    window.location.href = `/knowledge-detail.html?id=${id}`;
+                },
+
+                // 6. 初始化加载收藏列表
+                loadCollectedKnowledge() {
+                    this.loading = true;
+                    axios.get('/api/collections')
+                        .then(response => {
+                            if (response.data.code === 1) {
+                                this.collectedKnowledge = response.data.data || [];
+                                this.filteredCollections = [...this.collectedKnowledge];
+                                this.updatePagination();
+                            } else {
+                                this.collectedKnowledge = [];
+                                this.filteredCollections = [];
+                                this.showToast('获取收藏列表失败：' + response.data.msg, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('加载收藏列表失败', error);
+                            this.showToast('网络错误，无法加载收藏列表', 'error');
+                            this.collectedKnowledge = [];
+                            this.filteredCollections = [];
+                        })
+                        .finally(() => {
+                            this.loading = false;
+                        });
+                },
+
+                // 7. 切换模块
+                switchModule(moduleName) {
+                    window.location.href = '/browse-knowledge.html';
+                },
+
+                // 8. 格式化日期
+                formatDate(dateString) {
+                    if (!dateString) return '';
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('zh-CN', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                },
+
+                // 9. 分页相关方法
+                updatePagination() {
+                    this.totalPages = Math.ceil(this.filteredCollections.length / this.pageSize);
+                    this.currentPage = Math.min(this.currentPage, this.totalPages || 1);
+                },
+
+                changePage(page) {
+                    if (page === '...' || page < 1 || page > this.totalPages) return;
+                    this.currentPage = page;
+                    // 滚动到顶部
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                },
+
+                // 10. 显示提示信息
+                showToast(message, type = 'success') {
+                    // 创建提示元素
+                    const toast = document.createElement('div');
+                    toast.className = `toast ${type}`;
+                    toast.textContent = message;
+                    document.body.appendChild(toast);
+
+                    // 显示动画
+                    setTimeout(() => {
+                        toast.classList.add('show');
+                    }, 10);
+
+                    // 3秒后隐藏
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                        setTimeout(() => {
+                            document.body.removeChild(toast);
+                        }, 300);
+                    }, 3000);
+                },
+
+                // 11. 导出收藏
+                exportCollections() {
+                    if (this.collectedKnowledge.length === 0) {
+                        this.showToast('没有可导出的收藏', 'error');
+                        return;
+                    }
+
+                    this.loading = true;
+                    axios.get('/api/collections/export')
+                        .then(response => {
+                            this.showToast('收藏导出成功');
+                            // 处理导出文件逻辑
+                        })
+                        .catch(error => {
+                            console.error('导出收藏失败', error);
+                            this.showToast('导出收藏失败', 'error');
+                        })
+                        .finally(() => {
+                            this.loading = false;
+                        });
+                },
+
+                // 12. 清空收藏
+                clearAllCollections() {
+                    if (this.collectedKnowledge.length === 0) {
+                        this.showToast('收藏列表已为空', 'error');
+                        return;
+                    }
+
+                    if (!confirm('确定要清空所有收藏吗？此操作不可恢复！')) return;
+
+                    this.loading = true;
+                    axios.post('/api/collections/clear')
+                        .then(response => {
+                            if (response.data.code === 1) {
+                                this.collectedKnowledge = [];
+                                this.filteredCollections = [];
+                                this.updatePagination();
+                                this.showToast('所有收藏已清空');
+                            } else {
+                                this.showToast('清空收藏失败：' + response.data.msg, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('清空收藏失败', error);
+                            this.showToast('网络错误，清空收藏失败', 'error');
+                        })
+                        .finally(() => {
+                            this.loading = false;
+                        });
+                }
+            },
+
+            mounted() {
+                this.loadCollectedKnowledge();
+            },
+        });
+    </script>
+</body>
+
+</html>

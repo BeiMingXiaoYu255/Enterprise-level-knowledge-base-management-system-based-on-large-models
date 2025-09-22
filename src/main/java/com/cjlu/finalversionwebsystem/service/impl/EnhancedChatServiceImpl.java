@@ -257,7 +257,7 @@ public class EnhancedChatServiceImpl implements EnhancedChatService {
                                     isCompleted[0] = true;
                                     // 发送文件引用信息
                                     try {
-                                        ChatResponse finalResponse = new ChatResponse("\n\n📚 参考文件：\n文件名：" + fileName + "\n路径：" + System.getProperty("user.dir") + "/files/" + fileName, true);
+                                        ChatResponse finalResponse = new ChatResponse("\n\n📚 参考文件：\n文件名：" + fileName + "\n链接：" + "http:\\\\localhost:8080\\" + "/files/" + fileName, true);
                                         sink.next(finalResponse);
                                     } catch (Exception e) {
                                         log.warn("发送文件引用信息时出错: {}", e.getMessage());

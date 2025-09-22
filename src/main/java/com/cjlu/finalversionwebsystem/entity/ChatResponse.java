@@ -56,6 +56,7 @@ public class ChatResponse {
          * 引用的内容片段
          */
         private String snippet;
+
     }
     
     /**

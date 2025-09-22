@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人资料 - 恒生电子知识库管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="./self.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+    <div id="app" class="profile-app">
+        <!-- 头部 -->
+        <header class="profile-header">
+            <div class="header-content">
+                <h1 class="header-title">个人资料中心</h1>
+                <div class="header-actions">
+                    <button class="header-button" @click="goBack">
+                        <i class="fas fa-arrow-left"></i> 返回主页
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主体内容 -->
+        <main class="profile-content">
+            <!-- 左侧边栏 -->
+            <aside class="profile-sidebar">
+                <!-- 用户卡片 -->
+                <div class="user-card fade-in">
+                    <div class="avatar-container">
+                        <img src="./user.jpg" alt="用户头像" class="avatar-img">
+                        <div class="avatar-upload" @click="triggerFileInput">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <input type="file" ref="fileInput" @change="handleAvatarUpload" accept="image/*">
+                    </div>
+
+                    <h2 class="user-name">{{ user.nickName }}</h2>
+                    <p class="user-title">{{ user.position }} · {{ user.department }}</p>
+                    <p class="user-bio">{{ user.bio || '专注于前端架构和用户体验设计' }}</p>
+
+                    <div class="user-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">{{ userStats.knowledgeBases || 12 }}</div>
+                            <div class="stat-label">知识库</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">{{ userStats.documents || 47 }}</div>
+                            <div class="stat-label">文档</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">{{ userStats.collections || 28 }}</div>
+                            <div class="stat-label">收藏</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">{{ userStats.contributions || 153 }}</div>
+                            <div class="stat-label">贡献</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 系统信息卡片 -->
+                <div class="info-card fade-in" style="animation-delay: 0.1s;">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-laptop"></i> 系统信息</h3>
+                    </div>
+
+                    <!-- <div class="info-item">
+                        <div class="info-label"><i class="fas fa-user-shield"></i> 权限级别</div>
+                        <div class="info-value">高级用户</div>
+                    </div> -->
+
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-calendar-alt"></i> 注册时间</div>
+                        <div class="info-value">2023年3月15日</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-clock"></i> 最后活跃</div>
+                        <div class="info-value">2小时前</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-id-card"></i> 员工编号</div>
+                        <div class="info-value">HS-{{ user.id }}</div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 右侧主要内容 -->
+            <div class="profile-main">
+                <!-- 基本信息卡片 -->
+                <div class="info-card fade-in" style="animation-delay: 0.2s;">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-user-circle"></i> 基本信息</h3>
+                        <button class="edit-button" @click="toggleEditMode">
+                            <i class="fas" :class="isEditing ? 'fa-times' : 'fa-edit'"></i>
+                            {{ isEditing ? '取消编辑' : '编辑资料' }}
+                        </button>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-signature"></i> 用户名</div>
+                            <div class="info-value" v-if="!isEditing">{{ user.userName }}</div>
+                            <input v-else type="text" class="edit-input" v-model="editUser.userName" disabled>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-user-tag"></i> 昵称</div>
+                            <div class="info-value" v-if="!isEditing">{{ user.nickName }}</div>
+                            <input v-else type="text" class="edit-input" v-model="editUser.nickName">
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-id-card-alt"></i> 真实姓名</div>
+                            <div class="info-value">{{ user.realName }}</div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-venus-mars"></i> 性别</div>
+                            <div class="info-value" v-if="!isEditing">{{ user.gender }}</div>
+                            <select v-else class="edit-input" v-model="editUser.gender">
+                                <option value="男">男</option>
+                                <option value="女">女</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-envelope"></i> 邮箱</div>
+                            <div class="info-value" v-if="!isEditing">{{ user.email }}</div>
+                            <input v-else type="email" class="edit-input" v-model="editUser.email">
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-phone"></i> 联系电话</div>
+                            <div class="info-value" v-if="!isEditing">{{ user.phone }}</div>
+                            <input v-else type="tel" class="edit-input" v-model="editUser.phone">
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-building"></i> 部门</div>
+                            <div class="info-value">{{ user.department }}</div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-briefcase"></i> 职位</div>
+                            <div class="info-value">{{ user.position }}</div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-quote-left"></i> 个性签名</div>
+                        <div class="info-value" v-if="!isEditing">{{ user.bio || '这个人很懒，什么也没留下' }}</div>
+                        <textarea v-else class="edit-input" v-model="editUser.bio" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-actions" v-if="isEditing">
+                        <button class="action-button cancel-button" @click="cancelEdit">
+                            <i class="fas fa-times"></i> 取消
+                        </button>
+                        <button class="action-button save-button" @click="saveProfile">
+                            <i class="fas fa-check"></i> 保存更改
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 安全设置卡片 -->
+                <div class="info-card fade-in" style="animation-delay: 0.3s;">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-shield-alt"></i> 安全设置</h3>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-lock"></i> 密码</div>
+                        <div class="info-value">••••••••••</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-mobile-alt"></i> 双重验证</div>
+                        <div class="info-value">已启用</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-shield-check"></i> 安全等级</div>
+                        <div class="info-value">高</div>
+                    </div>
+
+                    <button class="edit-button" style="margin-top: 15px;">
+                        <i class="fas fa-cog"></i> 修改安全设置
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- 通知组件 -->
+        <div class="notification" :class="{ show: showNotification }">
+            <i class="fas fa-check-circle"></i>
+            <div class="notification-content">
+                <div class="notification-title">操作成功</div>
+                <div class="notification-message">{{ notificationMessage }}</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    isEditing: false,
+                    isDarkMode: false,
+                    showNotification: false,
+                    notificationMessage: '',
+                    user: {
+                        id: 1001,
+                        realName: '张明',
+                        userName: 'zhangming123',
+                        nickName: '樟茗',
+                        avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+                        gender: '男',
+                        email: 'zhang.ming@hss.com',
+                        phone: '13800138000',
+                        department: '技术研发部',
+                        position: '高级前端工程师',
+                        bio: '专注于前端架构和用户体验设计',
+                    },
+                    editUser: {},
+                    userStats: {
+                        knowledgeBases: 12,
+                        documents: 47,
+                        collections: 28,
+                        contributions: 153,
+                        lastActive: '2小时前'
+                    }
+                }
+            },
+            methods: {
+                // 切换编辑模式
+                toggleEditMode() {
+                    this.isEditing = !this.isEditing;
+                    if (this.isEditing) {
+                        this.editUser = { ...this.user };
+                    }
+                },
+
+                // 取消编辑
+                cancelEdit() {
+                    this.isEditing = false;
+                },
+
+                // 保存资料
+                async saveProfile() {
+                    try {
+                        // 模拟API调用延迟
+                        await new Promise(resolve => setTimeout(resolve, 800));
+
+                        // 更新本地数据
+                        this.user = { ...this.editUser };
+                        this.isEditing = false;
+
+                        // 显示成功通知
+                        this.showNotification = true;
+                        this.notificationMessage = '个人资料已成功更新';
+
+                        // 3秒后隐藏通知
+                        setTimeout(() => {
+                            this.showNotification = false;
+                        }, 3000);
+
+                    } catch (error) {
+                        console.error('保存资料失败:', error);
+                        this.showNotification = true;
+                        this.notificationMessage = '保存失败，请稍后重试';
+
+                        setTimeout(() => {
+                            this.showNotification = false;
+                        }, 3000);
+                    }
+                },
+
+                // 触发文件选择
+                triggerFileInput() {
+                    this.$refs.fileInput.click();
+                },
+
+                // 处理头像上传
+                async handleAvatarUpload(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    // 检查文件类型和大小
+                    if (!file.type.match('image.*')) {
+                        this.showNotification = true;
+                        this.notificationMessage = '请选择有效的图片文件';
+                        setTimeout(() => {
+                            this.showNotification = false;
+                        }, 3000);
+                        return;
+                    }
+
+                    try {
+                        // 模拟API调用延迟
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+
+                        // 创建临时URL用于预览
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.user.avatar = e.target.result;
+
+                            this.showNotification = true;
+                            this.notificationMessage = '头像更新成功';
+
+                            setTimeout(() => {
+                                this.showNotification = false;
+                            }, 3000);
+                        };
+                        reader.readAsDataURL(file);
+
+                    } catch (error) {
+                        console.error('上传头像失败:', error);
+                        this.showNotification = true;
+                        this.notificationMessage = '上传失败，请稍后重试';
+
+                        setTimeout(() => {
+                            this.showNotification = false;
+                        }, 3000);
+                    }
+                },
+
+                // 返回首页
+                goBack() {
+                    // 这里应该根据实际路由进行调整
+                    console.log('返回主页');
+                },
+
+            },
+            mounted() {
+                // 组件挂载时获取用户数据
+                console.log('个人资料页面加载完成');
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>知识库管理系统首页 - 恒生电子</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="index.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            microsoftGreen: '#0078d4',
+            microsoftDark: '#101820',
+            microsoftLight: '#f3f2f1',
+            darkBlue: '#0a2463',
+            navyBlue: '#23395b',
+            hsBlue: '#00488b',
+            hsLightBlue: '#5ac8fa',
+            hsDarkBlue: '#00264d',
+          },
+          fontFamily: {
+            segoe: ['Segoe UI', 'system-ui', 'sans-serif'],
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-soft': 'pulse-soft 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            'pulse-soft': {
+              '0%, 100%': { opacity: '1' },
+              '50%': { opacity: '0.8' },
+            }
+          }
+        },
+      }
+    }
+  </script>
+</head>
+
+<body class="font-segoe bg-gradient-to-br from-[#f0f7ff] to-[#d6e8ff] text-microsoftDark relative overflow-x-hidden">
+  <!-- 科技感背景 -->
+  <div class="tech-background" id="indexTechBackground"></div>
+  
+  <!-- 顶部通知栏 - 美化版本 -->
+  <div class="top-notification-bar bg-gradient-to-r from-hsDarkBlue via-hsBlue to-hsLightBlue py-3 px-4 relative z-10 overflow-hidden">
+    <!-- 动态背景元素 -->
+    <div class="notification-bg-pattern"></div>
+  
+    <div class="container mx-auto flex flex-col md:flex-row justify-between items-center relative z-2">
+      <!-- 主要通知内容 -->
+      <div class="flex items-center">
+        <!-- 动态图标 -->
+        <div class="notification-icon mr-3">
+          <svg class="h-5 w-5 text-white animate-pulse" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+          </svg>
+        </div>
+      
+        <p class="text-center md:text-left text-white font-medium text-sm tracking-wide notification-text">
+          <span class="inline-block bg-white/20 px-2 py-1 rounded-md mr-2 font-bold text-xs">NEW</span>
+          知识库管理系统V3.0版本正式发布！全新功能体验
+        </p>
+      </div>
+    
+      <!-- 行动链接 -->
+      <a href="#" class="text-white hover:text-cyan-200 mt-2 md:mt-0 transition-all duration-300 group flex items-center text-sm font-semibold tracking-tight notification-link">
+        查看更新日志
+        <span class="group-hover:translate-x-1 transform transition-transform duration-300 ml-1">
+          <i class="fas fa-chevron-right text-xs"></i>
+        </span>
+      </a>
+    </div>
+  
+    <!-- 进度指示器 -->
+    <div class="absolute bottom-0 left-0 h-0.5 bg-cyan-400 notification-progress"></div>
+  </div>
+
+  <!-- 导航栏 -->
+  <nav class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50 transition-all duration-300" id="mainNav">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <div class="flex items-center mr-8">
+          <div class="logo-icon mr-2">HS</div>
+          <span class="text-hsBlue font-bold text-xl">恒生知识库</span>
+        </div>
+
+        <!-- 主导航-桌面端 -->
+        <div class="hidden md:flex space-x-6">
+          <!-- 产品功能下拉框改进 -->
+          <div class="group relative nav-container">
+            <a href="#" class="nav-link-hover text-microsoftDark font-medium inline-block py-5">产品功能</a>
+            <div class="nav-dropdown py-4">
+                <!-- content -->
+              <div class="dropdown-layout">
+                <div class="dropdown-left">
+                  <div class="dropdown-section">
+                    <h3 class="dropdown-title">核心功能</h3>
+                    <ul>
+                      <li><a href="#"><i class="fas fa-laptop text-hsBlue"></i>文档管理</a></li>
+                      <li><a href="#"><i class="fas fa-cloud text-hsBlue"></i>云端存储</a></li>
+                      <li><a href="#"><i class="fas fa-database text-hsBlue"></i>数据备份</a> </li>
+                    </ul>
+                  </div>
+                  <div class="dropdown-section">
+                    <h3 class="dropdown-title">协作功能</h3>
+                    <ul>
+                      <li><a href="#"><i class="fas fa-users text-hsBlue"></i>团队协作</a></li>
+                      <li><a href="#"><i class="fas fa-comments text-hsBlue"></i>实时评论</a></li>
+                      <li><a href="#"><i class="fas fa-share-alt text-hsBlue"></i>知识共享</a></li>
+                    </ul>
+                  </div>
+                  <div class="dropdown-section">
+                    <h3 class="dropdown-title">高级功能</h3>
+                    <ul>
+                      <li><a href="#"><i class="fas fa-brain text-hsBlue"></i>智能搜索</a></li>
+                      <li><a href="#"><i class="fas fa-project-diagram text-hsBlue"></i>知识图谱</a></li>
+                      <li><a href="#"><i class="fas fa-user-shield text-hsBlue"></i>权限管理</a></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="dropdown-explore">
+                  <div class="explore-title">产品功能</div>
+                  <div class="explore-subtitle">全面了解系统功能特性，提升团队协作效率</div>
+                  <a href="#" class="explore-link">查看完整功能列表</a>
+                  <div class="explore-image-container">
+                    <img src="./function-preview.png" alt="功能预览" class="explore-image">
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <!-- 解决方案下拉框改进 -->
+        <div class="group relative">
+          <a href="#" class="nav-link-hover text-microsoftDark font-medium inline-block py-5">解决方案</a>
+          <div class="nav-dropdown py-4">
+            <div class="dropdown-layout">
+              <div class="dropdown-left">
+                <div class="dropdown-section">
+                  <h3 class="dropdown-title">企业应用</h3>
+                  <ul>
+                    <li><a href="#"><i class="fas fa-building text-hsBlue"></i>企业知识库</a></li>
+                    <li><a href="#"><i class="fas fa-code text-hsBlue"></i>研发文档库</a></li>
+                    <li><a href="#"><i class="fas fa-graduation-cap text-hsBlue"></i>培训资料库</a></li>
+                  </ul>
+                </div>
+                <div class="dropdown-section">
+                  <h3 class="dropdown-title">行业方案</h3>
+                  <ul>
+                    <li><a href="#"><i class="fas fa-hospital text-hsBlue"></i>医疗行业</a></li>
+                    <li><a href="#"><i class="fas fa-money-bill-wave text-hsBlue"></i>金融行业</a></li>
+                    <li><a href="#"><i class="fas fa-graduation-cap text-hsBlue"></i>教育行业</a></li>
+                  </ul>
+                </div>
+                <div class="dropdown-section">
+                  <h3 class="dropdown-title">服务支持</h3>
+                  <ul>
+                    <li><a href="#"><i class="fas fa-headset text-hsBlue"></i>客户支持库</a></li>
+                    <li><a href="#"><i class="fas fa-book text-hsBlue"></i>产品文档库</a></li>
+                    <li><a href="#"><i class="fas fa-question-circle text-hsBlue"></i>FAQ知识库</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="dropdown-explore">
+                <div class="explore-title">解决方案</div>
+                <div class="explore-subtitle">为不同场景提供定制方案</div>
+                <a href="#" class="explore-link">查看所有解决方案</a>
+                <div class="explore-image-container">
+                  <img src="./solutions-preview.png" alt="解决方案预览" class="explore-image">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 资源中心下拉框改进 -->
+        <div class="group relative">
+          <a href="#" class="nav-link-hover text-microsoftDark font-medium inline-block py-5">资源中心</a>
+          <div class="nav-dropdown py-4">
+            <div class="dropdown-layout">
+              <div class="dropdown-left">
+                <div class="dropdown-section">
+                  <h3 class="dropdown-title">学习资源</h3>
+                  <ul>
+                    <li><a href="#"><i class="fas fa-book-open text-hsBlue"></i>使用教程</a></li>
+                    <li><a href="#"><i class="fas fa-code text-hsBlue"></i>API文档</a></li>
+                    <li><a href="#"><i class="fas fa-file-alt text-hsBlue"></i>开发指南</a></li>
+                  </ul>
+                </div>
+                <div class="dropdown-section">
+                  <h3 class="dropdown-title">多媒体资源</h3>
+                  <ul>
+                    <li><a href="#"><i class="fas fa-video text-hsBlue"></i>视频教程</a></li>
+                    <li><a href="#"><i class="fas fa-chalkboard-teacher text-hsBlue"></i>在线课程</a></li>
+                    <li><a href="#"><i class="fas fa-microphone text-hsBlue"></i>专家讲座</a></li>
+                  </ul>
+                </div>
+                <div class="dropdown-section">
+                  <h3 class="dropdown-title">实用工具</h3>
+                  <ul>
+                    <li><a href="#"><i class="fas fa-download text-hsBlue"></i>模板下载</a></li>
+                    <li><a href="#"><i class="fas fa-cogs text-hsBlue"></i>插件工具</a></li>
+                    <li><a href="#"><i class="fas fa-mobile-alt text-hsBlue"></i>移动应用</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="dropdown-explore">
+                <div class="explore-title">资源中心</div>
+                <div class="explore-subtitle">获取丰富的学习与支持资源</div>
+                <a href="#" class="explore-link">浏览全部资源</a>
+                <div class="explore-image-container">
+                  <img src="./resources-preview.png" alt="资源预览" class="explore-image">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+          <a href="#" class="nav-link-hover text-microsoftDark font-medium inline-block py-5">关于我们</a>
+          <a href="#" class="nav-link-hover text-microsoftDark font-medium inline-block py-5">联系销售</a>
+        </div>
+
+        <!-- 右侧操作栏 -->
+        <div class="flex items-center space-x-4 md:space-x-6">
+          <div class="relative hidden sm:block">
+            <input type="text" placeholder="搜索知识库功能..." class="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hsBlue focus:border-transparent w-36 lg:w-48 transition-all duration-300 bg-white/80">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          </div>
+          <a href="../LoginRegistration Page/login.html" class="bg-hsBlue text-white px-4 py-2 rounded-md text-sm font-medium hidden sm:block transition-all duration-300 hover:bg-hsDarkBlue hover:shadow-md"> 登录/注册
+          </a>
+          <!-- 移动端菜单按钮 -->
+          <button id="mobileMenuBtn" class="md:hidden text-microsoftDark focus:outline-none">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 移动端导航菜单 -->
+    <div id="mobileMenu" class="md:hidden hidden bg-white/95 backdrop-blur-md border-t border-gray-200">
+      <div class="container mx-auto px-4 py-4 space-y-4">
+        <div class="relative mb-4">
+          <input type="text" placeholder="搜索知识库功能..." class="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hsBlue focus:border-transparent w-full bg-white/80">
+          <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        </div>
+        <a href="#" class="block py-2 hover:text-hsBlue transition-colors duration-300">产品功能</a>
+        <a href="#" class="block py-2 hover:text-hsBlue transition-colors duration-300">解决方案</a>
+        <a href="#" class="block py-2 hover:text-hsBlue transition-colors duration-300">定价方案</a>
+        <a href="#" class="block py-2 hover:text-hsBlue transition-colors duration-300">客户案例</a>
+        <a href="#" class="block py-2 hover:text-hsBlue transition-colors duration-300">帮助中心</a>
+        <a href="#" class="block py-2 hover:text-hsBlue transition-colors duration-300">资源中心</a>
+        <a href="#" class="block py-2 hover:text-hsBlue transition-colors duration-300">关于我们</a>
+        <a href="#" class="block py-2 hover:text-hsBlue transition-colors duration-300">联系销售</a>
+        <div class="pt-4 border-t border-gray-200">
+          <a href="login.html" class="block py-2 hover:text-hsBlue transition-colors duration-300">登录</a>
+          <a href="login.html" class="block py-2 hover:text-hsBlue transition-colors duration-300">免费试用</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主横幅 -->
+  <section class="py-12 md:py-20 overflow-hidden relative z-1">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col lg:flex-row items-center">
+        <div class="lg:w-1/2 mb-10 lg:mb-0 lg:pr-10 slide-up">
+          <span class="inline-block bg-gradient-to-r from-hsBlue to-hsLightBlue text-white text-sm font-bold px-4 py-2 rounded-full mb-6 shadow-md">智能知识管理平台</span>
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-hsDarkBlue">集中管理企业知识资产，提升团队协作效率</h1>
+          <p class="text-lg text-gray-700 mb-8 max-w-lg">一站式知识库解决方案，帮助企业构建结构化知识体系，实现知识的创建、存储、共享与协作，让每个员工都能快速获取所需信息。</p>
+          <div class="flex flex-wrap gap-4">
+            <a href="#" class="bg-gradient-to-r from-hsBlue to-hsLightBlue text-white px-8 py-4 rounded-md font-medium banner-btn-hover inline-block shadow-lg">
+              免费试用 14 天 <i class="fas fa-chevron-right ml-2"></i>
+            </a>
+            <a href="#" class="bg-white text-hsBlue border border-hsBlue px-8 py-4 rounded-md font-medium hover:bg-blue-50 transition-all duration-300 shadow-sm hover:shadow-md">
+              观看演示视频 <i class="fas fa-chevron-right ml-2"></i>
+            </a>
+          </div>
+          <div class="mt-10 flex items-center space-x-6 text-gray-500">
+            <div class="flex items-center">
+              <div class="w-10 h-10 rounded-full bg-hsLightBlue/20 flex items-center justify-center mr-2">
+                <i class="fas fa-check text-hsBlue"></i>
+              </div>
+              <span>安全可靠</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-10 h-10 rounded-full bg-hsLightBlue/20 flex items-center justify-center mr-2">
+                <i class="fas fa-check text-hsBlue"></i>
+              </div>
+              <span>高效协作</span>
+            </div>
+          </div>
+        </div>
+        <div class="lg:w-1/2 flex justify-center scale-in relative" style="background: transparent">
+          <canvas id="techLinesCanvas"></canvas>
+          <!-- Three.js CDN -->
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 客户评价区 -->
+  <section class="py-16 bg-white/50 backdrop-blur-sm relative z-1">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-hsDarkBlue">深受企业信赖</h2>
+        <p class="text-gray-600 mt-2 max-w-2xl mx-auto">超过5,000家企业选择我们的知识库解决方案</p>
+      </div>
+      
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-center opacity-80">
+        <div class="flex justify-center">
+          <div class="h-12 text-gray-400">
+            <i class="fas fa-building text-4xl"></i>
+          </div>
+        </div>
+        <div class="flex justify-center">
+          <div class="h-12 text-gray-400">
+            <i class="fas fa-university text-4xl"></i>
+          </div>
+        </div>
+        <div class="flex justify-center">
+          <div class="h-12 text-gray-400">
+            <i class="fas fa-hospital text-4xl"></i>
+          </div>
+        </div>
+        <div class="flex justify-center">
+          <div class="h-12 text-gray-400">
+            <i class="fas fa-landmark text-4xl"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 轮播促销区 -->
+  <section class="py-16 bg-transparent overflow-hidden relative z-1">
+    <div class="container mx-auto px-4">
+      <div class="relative">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-hsDarkBlue">知识库核心功能</h2>
+          <p class="text-gray-600 mt-2 max-w-2xl mx-auto">高效、智能、安全的知识管理解决方案，助力企业数字化转型</p>
+        </div>
+        
+        <div class="carousel overflow-x-hidden" id="promoCarousel">
+          <div class="flex transition-transform duration-500 ease-out" id="carouselTrack">
+            <!-- 促销卡片 1 -->
+            <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] p-4">
+              <div class="bg-white/80 backdrop-blur-md rounded-xl overflow-hidden product-card-hover h-full border border-white/20 shadow-lg hover:shadow-xl transition-all duration-500">
+                <div class="p-6 md:p-8">
+                  <span class="inline-block bg-gradient-to-r from-hsBlue to-hsLightBlue text-white text-xs font-bold px-3 py-1 rounded-full mb-4">智能管理</span>
+                  <h3 class="text-2xl font-bold mb-3 text-hsDarkBlue">文档集中管理</h3>
+                  <p class="text-gray-700 mb-6">支持多种格式文档上传与管理，自动分类与版本控制，让企业知识资产井井有条。</p>
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <span class="text-2xl font-bold text-hsBlue">高效</span>
+                      <span class="text-gray-500 line-through ml-2">繁琐</span>
+                    </div>
+                    <a href="#" class="text-hsBlue font-medium hover:underline flex items-center">
+                      了解更多 <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 促销卡片 2 -->
+            <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] p-4">
+              <div class="bg-white/80 backdrop-blur-md rounded-xl overflow-hidden product-card-hover h-full border border-white/20 shadow-lg hover:shadow-xl transition-all duration-500">
+                <div class="p-6 md:p-8">
+                  <span class="inline-block bg-gradient-to-r from-hsDarkBlue to-hsBlue text-white text-xs font-bold px-3 py-1 rounded-full mb-4">智能检索</span>
+                  <h3 class="text-2xl font-bold mb-3 text-hsDarkBlue">全文搜索功能</h3>
+                  <p class="text-gray-700 mb-6">基于AI的智能搜索引擎，支持关键词、语义和模糊搜索，快速定位所需知识内容。</p>
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <span class="text-2xl font-bold text-hsBlue">精准</span>
+                      <span class="text-gray-500 line-through ml-2">低效</span>
+                    </div>
+                    <a href="#" class="text-hsBlue font-medium hover:underline flex items-center">
+                      了解更多 <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 促销卡片 3 -->
+            <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] p-4">
+              <div class="bg-white/80 backdrop-blur-md rounded-xl overflow-hidden product-card-hover h-full border border-white/20 shadow-lg hover:shadow-xl transition-all duration-500">
+                <div class="p-6 md:p-8">
+                  <span class="inline-block bg-gradient-to-r from-hsLightBlue to-cyan-400 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">协作共享</span>
+                  <h3 class="text-2xl font-bold mb-3 text-hsDarkBlue">团队协作平台</h3>
+                  <p class="text-gray-700 mb-6">多人实时协作编辑，评论与反馈功能，权限精细控制，促进知识高效流转。</p>
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <span class="text-2xl font-bold text-hsBlue">协同</span>
+                      <span class="text-gray-500 line-through ml-2">孤立</span>
+                    </div>
+                    <a href="#" class="text-hsBlue font-medium hover:underline flex items-center">
+                      了解更多 <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 轮播控制按钮 -->
+        <button id="prevBtn" class="absolute top-1/2 left-0 -translate-y-1/2 bg-white/90 hover:bg-white text-hsBlue w-12 h-12 rounded-full flex items-center justify-center shadow-lg z-10 focus:outline-none transition-all duration-300 hover:scale-110">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button id="nextBtn" class="absolute top-1/2 right-0 -translate-y-1/2 bg-white/90 hover:bg-white text-hsBlue w-12 h-12 rounded-full flex items-center justify-center shadow-lg z-10 focus:outline-none transition-all duration-300 hover:scale-110">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <!-- 轮播指示器 -->
+        <div class="flex justify-center mt-8 space-x-3" id="carouselIndicators">
+          <button class="w-3 h-3 rounded-full bg-hsBlue" data-index="0"></button>
+          <button class="w-3 h-3 rounded-full bg-gray-300" data-index="1"></button>
+          <button class="w-3 h-3 rounded-full bg-gray-300" data-index="2"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 功能特色区 -->
+  <section class="py-16 bg-gradient-to-b from-white to-blue-50 relative z-1">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-hsDarkBlue">为什么选择恒生知识库</h2>
+        <p class="text-gray-600 mt-2 max-w-2xl mx-auto">专为企业知识管理设计的全方位解决方案</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300">
+          <div class="w-14 h-14 rounded-full bg-hsLightBlue/20 flex items-center justify-center mb-4">
+            <i class="fas fa-shield-alt text-2xl text-hsBlue"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">企业级安全保障</h3>
+          <p class="text-gray-600">多重加密措施，权限精细控制，确保企业知识资产安全无虞</p>
+        </div>
+        
+        <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300">
+          <div class="w-14 h-14 rounded-full bg-hsLightBlue/20 flex items-center justify-center mb-4">
+            <i class="fas fa-bolt text-2xl text-hsBlue"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">极速检索体验</h3>
+          <p class="text-gray-600">基于AI的智能搜索引擎，毫秒级响应，快速定位所需内容</p>
+        </div>
+        
+        <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300">
+          <div class="w-14 h-14 rounded-full bg-hsLightBlue/20 flex items-center justify-center mb-4">
+            <i class="fas fa-users text-2xl text-hsBlue"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">无缝团队协作</h3>
+          <p class="text-gray-600">实时协作编辑，评论反馈，版本历史，促进团队知识共享</p>
+        </div>
+        
+        <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300">
+          <div class="w-14 h-14 rounded-full bg-hsLightBlue/20 flex items-center justify-center mb-4">
+            <i class="fas fa-mobile-alt text-2xl text-hsBlue"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">全平台支持</h3>
+          <p class="text-gray-600">支持Web、iOS和Android，随时随地访问企业知识库</p>
+        </div>
+        
+        <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300">
+          <div class="w-14 h-14 rounded-full bg-hsLightBlue/20 flex items-center justify-center mb-4">
+            <i class="fas fa-plug text-2xl text-hsBlue"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">强大集成能力</h3>
+          <p class="text-gray-600">与常用办公软件无缝集成，支持API扩展，满足企业个性化需求</p>
+        </div>
+        
+        <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300">
+          <div class="w-14 h-14 rounded-full bg-hsLightBlue/20 flex items-center justify-center mb-4">
+            <i class="fas fa-chart-line text-2xl text-hsBlue"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">智能数据分析</h3>
+          <p class="text-gray-600">知识使用情况分析，员工贡献度统计，助力企业知识管理优化</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA区域 -->
+  <section class="py-20 bg-gradient-to-r from-hsDarkBlue to-hsBlue text-white relative z-1 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <div class="absolute top-0 left-0 w-full h-full opacity-10">
+        <div class="grid grid-cols-4 gap-16 transform rotate-12">
+          <div class="h-32 bg-white rounded-lg"></div>
+          <div class="h-32 bg-white rounded-lg"></div>
+          <div class="h-32 bg-white rounded-lg"></div>
+          <div class="h-32 bg-white rounded-lg"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">开始您的知识管理之旅</h2>
+        <p class="text-xl text-blue-100 mb-10">立即免费试用14天，体验高效知识管理带来的变革</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a href="#" class="bg-white text-hsBlue px-8 py-4 rounded-md font-medium banner-btn-hover inline-block shadow-lg">
+            免费开始试用 <i class="fas fa-chevron-right ml-2"></i>
+          </a>
+          <a href="#" class="bg-transparent text-white border border-white px-8 py-4 rounded-md font-medium hover:bg-white hover:text-hsBlue transition-all duration-300">
+            联系销售顾问
+          </a>
+        </div>
+        <p class="mt-6 text-blue-200">无需信用卡，注册即可使用全部功能</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="bg-gradient-to-b from-hsDarkBlue to-black pt-16 pb-8 text-gray-300 relative z-10">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
+        <div>
+          <h4 class="text-white text-lg font-semibold mb-4">产品</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition-colors duration-300">功能特性</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-300">版本对比</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-300">更新日志</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-white text-lg font-semibold mb-4">解决方案</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition-colors duration-300">企业知识库</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-300">研发文档管理</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-300">客户服务知识库</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-white text-lg font-semibold mb-4">资源</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition-colors duration-300">帮助中心</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-300">使用教程</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-300">API文档</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-white text-lg font-semibold mb-4">公司</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition-colors duration-300">关于我们</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-300">客户案例</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-300">联系我们</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-white text-lg font-semibold mb-4">法律</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition-colors duration-300">服务条款</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-300">隐私政策</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-300">数据安全</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-white text-lg font-semibold mb-4">联系我们</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="hover:text-white transition-colors duration-300">销售咨询</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-300">技术支持</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-300">反馈建议</a></li>
+          </ul>
+          
+          <h4 class="text-white text-lg font-semibold mb-4 mt-6">语言</h4>
+          <div class="flex items-center cursor-pointer group">
+            <img src="https://flagcdn.com/w20/cn.png" alt="中国国旗" class="w-5 h-4 mr-2">
+            <span class="group-hover:text-white transition-colors duration-300">简体中文 (中国)</span>
+            <i class="fas fa-chevron-down ml-2 text-xs group-hover:text-white transition-colors duration-300"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center mb-4 md:mb-0">
+          <div class="logo-icon mr-3">HS</div>
+          <p class="text-sm">© 2023 恒生电子知识库管理系统 版权所有</p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
+          <a href="#" class="hover:text-white transition-colors duration-300">服务条款</a>
+          <a href="#" class="hover:text-white transition-colors duration-300">隐私政策</a>
+          <a href="#" class="hover:text-white transition-colors duration-300">Cookie 政策</a>
+          <a href="#" class="hover:text-white transition-colors duration-300">安全声明</a>
+          <a href="#" class="hover:text-white transition-colors duration-300">网站地图</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 返回顶部按钮 -->
+  <button id="backToTop" class="fixed bottom-8 right-8 bg-gradient-to-br from-hsBlue to-hsLightBlue text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300 z-50 hover:shadow-xl">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <!-- JavaScript -->
+  <script src="index.js"></script>
+  
+</body>
+
+</html>
